@@ -1,4 +1,5 @@
 const jwt = require('jsonwebtoken');
+const bcrypt = require('bcryptjs');
 const User = require('../models/User');
 
 // Generate JWT token
@@ -46,8 +47,6 @@ const login = async (req, res) => {
       _id: user._id,
       username: user.username,
       email: user.email,
-      firstName: user.firstName,
-      lastName: user.lastName,
       role: user.role,
       permissions: user.permissions,
       lastLogin: user.lastLogin
@@ -76,7 +75,7 @@ const getProfile = async (req, res) => {
 // Update user profile
 const updateProfile = async (req, res) => {
   try {
-    const { firstName, lastName, email } = req.body;
+    const { username, email } = req.body;
     
     const user = await User.findById(req.user._id);
     if (!user) {
@@ -84,8 +83,7 @@ const updateProfile = async (req, res) => {
     }
 
     // Update fields
-    if (firstName) user.firstName = firstName;
-    if (lastName) user.lastName = lastName;
+    if (username) user.username = username;
     if (email) user.email = email;
 
     await user.save();
@@ -94,8 +92,6 @@ const updateProfile = async (req, res) => {
       _id: user._id,
       username: user.username,
       email: user.email,
-      firstName: user.firstName,
-      lastName: user.lastName,
       role: user.role,
       permissions: user.permissions,
       lastLogin: user.lastLogin
@@ -168,9 +164,7 @@ const createUser = async (req, res) => {
       username,
       email,
       password,
-      firstName,
-      lastName,
-      role: role || 'moderator',
+      role: role || 'editor',
       permissions: permissions || ['events', 'publications', 'members', 'contacts']
     });
 
@@ -180,8 +174,6 @@ const createUser = async (req, res) => {
       _id: user._id,
       username: user.username,
       email: user.email,
-      firstName: user.firstName,
-      lastName: user.lastName,
       role: user.role,
       permissions: user.permissions,
       isActive: user.isActive,
@@ -200,7 +192,7 @@ const createUser = async (req, res) => {
 // Update user (admin only)
 const updateUser = async (req, res) => {
   try {
-    const { firstName, lastName, email, role, permissions, isActive } = req.body;
+    const { username, email, role, permissions, isActive } = req.body;
     const userId = req.params.id;
 
     const user = await User.findById(userId);
@@ -209,8 +201,7 @@ const updateUser = async (req, res) => {
     }
 
     // Update fields
-    if (firstName) user.firstName = firstName;
-    if (lastName) user.lastName = lastName;
+    if (username) user.username = username;
     if (email) user.email = email;
     if (role) user.role = role;
     if (permissions) user.permissions = permissions;
@@ -222,8 +213,6 @@ const updateUser = async (req, res) => {
       _id: user._id,
       username: user.username,
       email: user.email,
-      firstName: user.firstName,
-      lastName: user.lastName,
       role: user.role,
       permissions: user.permissions,
       isActive: user.isActive,
@@ -260,6 +249,40 @@ const deleteUser = async (req, res) => {
   }
 };
 
+// Toggle user status (admin only)
+const toggleUserStatus = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const user = await User.findById(id);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    user.isActive = !user.isActive;
+    await user.save();
+
+    const userData = {
+      _id: user._id,
+      username: user.username,
+      email: user.email,
+      role: user.role,
+      permissions: user.permissions,
+      isActive: user.isActive,
+      lastLogin: user.lastLogin,
+      createdAt: user.createdAt,
+      updatedAt: user.updatedAt
+    };
+
+    res.json({
+      message: 'User status updated successfully',
+      user: userData
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 module.exports = {
   login,
   getProfile,
@@ -268,5 +291,6 @@ module.exports = {
   getAllUsers,
   createUser,
   updateUser,
-  deleteUser
+  deleteUser,
+  toggleUserStatus
 }; 

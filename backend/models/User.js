@@ -23,8 +23,8 @@ const userSchema = new mongoose.Schema({
   },
   role: {
     type: String,
-    enum: ['admin', 'moderator'],
-    default: 'moderator'
+    enum: ['admin', 'moderator', 'editor'],
+    default: 'editor'
   },
   isActive: {
     type: Boolean,
@@ -57,11 +57,6 @@ userSchema.pre('save', async function(next) {
 // Method to compare password
 userSchema.methods.comparePassword = async function(candidatePassword) {
   return bcrypt.compare(candidatePassword, this.password);
-};
-
-// Method to get full name
-userSchema.methods.getFullName = function() {
-  return `${this.firstName} ${this.lastName}`;
 };
 
 // Method to check permissions

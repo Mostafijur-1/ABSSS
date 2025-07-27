@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import AdminLayout from '@/components/admin/AdminLayout';
 import { dashboardApi, authStorage } from '@/lib/auth';
+import { eventsApi } from '@/lib/api';
 import { 
   Calendar, 
   FileText, 
@@ -136,17 +137,19 @@ export default function AdminDashboard() {
 
   return (
     <AdminLayout title="Dashboard">
-      <div className="space-y-6">
+      <div className="space-y-6 max-w-7xl mx-auto">
         {/* Welcome Section */}
         <div className="bg-gradient-to-r from-blue-600 to-blue-700 rounded-lg shadow-lg p-6 text-white">
-          <h1 className="text-2xl font-bold mb-2">Welcome to ABSSS Admin Panel</h1>
-          <p className="text-blue-100">
-            Manage events, publications, members, and monitor system activity from one central dashboard.
-          </p>
+          <div>
+            <h1 className="text-2xl font-bold mb-2">Welcome to ABSSS Admin Panel</h1>
+            <p className="text-blue-100">
+              Manage events, publications, members, and monitor system activity from one central dashboard.
+            </p>
+          </div>
         </div>
 
         {/* Statistics Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-4 lg:gap-6">
           <StatCard
             title="Total Events"
             value={stats?.stats.totalEvents || 0}
@@ -192,7 +195,7 @@ export default function AdminDashboard() {
         </div>
 
         {/* Recent Activities */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 lg:gap-6">
           <RecentActivityCard
             title="Recent Events"
             items={stats?.recentActivities.events}
@@ -218,7 +221,7 @@ export default function AdminDashboard() {
         {/* Quick Actions */}
         <div className="bg-white rounded-lg shadow p-6">
           <h3 className="text-lg font-medium text-gray-900 mb-4">Quick Actions</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             <a
               href="/admin/events"
               className="flex items-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
@@ -253,7 +256,7 @@ export default function AdminDashboard() {
         {/* System Status */}
         <div className="bg-white rounded-lg shadow p-6">
           <h3 className="text-lg font-medium text-gray-900 mb-4">System Status</h3>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             <div className="flex items-center p-4 bg-green-50 rounded-lg">
               <CheckCircle className="h-5 w-5 text-green-600 mr-3" />
               <div>

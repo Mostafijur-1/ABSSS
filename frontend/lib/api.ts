@@ -48,6 +48,18 @@ export interface ContactForm {
   subject?: string;
 }
 
+export interface User {
+  _id: string;
+  username: string;
+  email: string;
+  role: 'admin' | 'moderator' | 'editor';
+  permissions: string[];
+  isActive: boolean;
+  lastLogin: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
 // Generic API function
 async function apiCall<T>(endpoint: string, options?: RequestInit): Promise<T> {
   const response = await fetch(`${API_BASE_URL}${endpoint}`, {
@@ -107,4 +119,16 @@ export const membersApi = {
 export const contactApi = {
   submit: (contact: ContactForm) => 
     apiCall<{ message: string; contact: any }>('/contact', { method: 'POST', body: JSON.stringify(contact) }),
+};
+
+// Users API
+export const usersApi = {
+  getAll: () => apiCall<User[]>('/auth/users'),
+  getById: (id: string) => apiCall<User>(`/auth/users/${id}`),
+  create: (user: Omit<User, '_id' | 'createdAt' | 'updatedAt' | 'lastLogin'>) => 
+    apiCall<User>('/auth/users', { method: 'POST', body: JSON.stringify(user) }),
+  update: (id: string, user: Partial<User>) => 
+    apiCall<User>(`/auth/users/${id}`, { method: 'PUT', body: JSON.stringify(user) }),
+  delete: (id: string) => apiCall<{ message: string }>(`/auth/users/${id}`, { method: 'DELETE' }),
+  toggleStatus: (id: string) => apiCall<User>(`/auth/users/${id}/toggle-status`, { method: 'PATCH' }),
 }; 

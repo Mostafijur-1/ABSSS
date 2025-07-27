@@ -8,7 +8,8 @@ const {
   getAllUsers,
   createUser,
   updateUser,
-  deleteUser
+  deleteUser,
+  toggleUserStatus
 } = require('../controllers/authController');
 const { authenticateToken, requireAdmin } = require('../middleware/auth');
 
@@ -22,9 +23,10 @@ router.put('/change-password', authenticateToken, changePassword);
 
 // Admin routes (require admin role)
 router.get('/users', authenticateToken, requireAdmin, getAllUsers);
-// router.post('/users', authenticateToken, requireAdmin, createUser);
-router.post('/users', createUser);
+router.post('/users', authenticateToken, requireAdmin, createUser);
+// router.post('/users', createUser);
 router.put('/users/:id', authenticateToken, requireAdmin, updateUser);
 router.delete('/users/:id', authenticateToken, requireAdmin, deleteUser);
+router.patch('/users/:id/toggle-status', authenticateToken, requireAdmin, toggleUserStatus);
 
 module.exports = router; 
