@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import AdminLayout from '@/components/admin/AdminLayout';
-import { authStorage } from '@/lib/auth';
+import { authStorage } from '@/lib/clientAuth';
 import { 
   User, 
   Edit, 
@@ -48,8 +48,8 @@ export default function AdminProfile() {
       if (userData) {
         const mockProfile: UserProfile = {
           _id: '1',
-          firstName: userData.firstName || 'Admin',
-          lastName: userData.lastName || 'User',
+          firstName: userData.username || 'Admin',
+          lastName: 'User',
           email: userData.email || 'admin@absss.com',
           role: userData.role || 'admin',
           permissions: userData.permissions || ['all'],

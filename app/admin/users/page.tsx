@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import AdminLayout from '@/components/admin/AdminLayout';
-import { authStorage } from '@/lib/auth';
+import { authStorage } from '@/lib/clientAuth';
 import { usersApi, User } from '@/lib/api';
 import { 
   Plus, 

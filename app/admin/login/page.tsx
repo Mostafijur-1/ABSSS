@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { authApi, authStorage } from '@/lib/auth';
+import { authApi, authStorage } from '@/lib/clientAuth';
 import { Eye, EyeOff, Lock, User } from '@/components/Icons';
 
 export default function AdminLogin() {

@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import AdminLayout from '@/components/admin/AdminLayout';
-import { dashboardApi, authStorage } from '@/lib/auth';
+import { authStorage } from '@/lib/clientAuth';
 import { eventsApi, blogsApi } from '@/lib/api';
 import { 
   Calendar, 
@@ -56,7 +56,16 @@ export default function AdminDashboard() {
         const token = authStorage.getToken();
         if (!token) return;
 
-        const data = await dashboardApi.getStats(token);
+        const response = await fetch('/api/dashboard/stats', {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          }
+        });
+        
+        if (!response.ok) throw new Error('Failed to fetch stats');
+        
+        const data = await response.json();
         setStats(data);
       } catch (err: any) {
         setError(err.message || 'Failed to load dashboard stats');

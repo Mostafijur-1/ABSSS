@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import AdminLayout from '@/components/admin/AdminLayout';
-import { authStorage } from '@/lib/auth';
+import { authStorage } from '@/lib/clientAuth';
 import { 
   BarChart3, 
   TrendingUp,

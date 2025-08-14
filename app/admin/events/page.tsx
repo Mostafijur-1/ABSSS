@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import AdminLayout from '@/components/admin/AdminLayout';
 import { eventsApi } from '@/lib/api';
-import { authStorage } from '@/lib/auth';
+import { authStorage } from '@/lib/clientAuth';
 import { Event } from '@/lib/api';
 import { 
   Plus, 

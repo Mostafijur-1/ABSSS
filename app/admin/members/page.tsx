@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import AdminLayout from '@/components/admin/AdminLayout';
 import { membersApi } from '@/lib/api';
-import { authStorage } from '@/lib/auth';
+import { authStorage } from '@/lib/clientAuth';
 import { Member } from '@/lib/api';
 import FileUpload from '@/components/FileUpload';
 import { 

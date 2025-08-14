@@ -62,7 +62,7 @@ export default function NewBlogPage() {
         formDataForUpload.append('image', selectedImage);
         
         // Upload image to get Cloudinary URL
-        const uploadResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api'}/upload/image`, {
+        const uploadResponse = await fetch('/api/upload/image', {
           method: 'POST',
           body: formDataForUpload
         });
@@ -74,7 +74,7 @@ export default function NewBlogPage() {
       }
 
       // Create blog with JSON (same as before, just with imageUrl if file was uploaded)
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api'}/blogs`, {
+      const response = await fetch('/api/blogs', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

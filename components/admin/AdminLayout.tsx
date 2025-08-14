@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { User, authStorage, hasPermission } from '@/lib/auth';
+import { User, authStorage, hasPermission } from '@/lib/clientAuth';
 import { 
   Menu, 
   X, 
@@ -111,12 +111,12 @@ export default function AdminLayout({ children, title = 'Admin Dashboard' }: Adm
             <div className="flex items-center">
               <div className="w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center">
                 <span className="text-gray-600 font-medium text-sm">
-                  {user?.firstName?.charAt(0)}{user?.lastName?.charAt(0)}
+                  {user?.username?.charAt(0)?.toUpperCase()}
                 </span>
               </div>
               <div className="ml-3">
                 <p className="text-sm font-medium text-gray-900">
-                  {user?.firstName} {user?.lastName}
+                  {user?.username}
                 </p>
                 <p className="text-xs text-gray-500 capitalize">{user?.role}</p>
               </div>
@@ -149,7 +149,7 @@ export default function AdminLayout({ children, title = 'Admin Dashboard' }: Adm
             <div className="flex items-center space-x-4">
               <div className="hidden sm:flex items-center space-x-2 text-sm text-gray-500">
                 <span>Welcome back,</span>
-                <span className="font-medium text-gray-900">{user?.firstName}</span>
+                <span className="font-medium text-gray-900">{user?.username}</span>
               </div>
             </div>
           </div>
