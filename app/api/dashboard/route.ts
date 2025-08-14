@@ -19,7 +19,7 @@ export async function GET() {
       upcomingEvents,
       totalMembers,
       totalPublications,
-      Contact.countDocuments({ isRead: false }),
+      unreadContacts,
       totalUsers,
       recentBlogs,
       recentEvents
@@ -30,7 +30,7 @@ export async function GET() {
       Event.countDocuments({ date: { $gte: new Date() } }),
       Member.countDocuments(),
       Publication.countDocuments(),
-      unreadContacts,
+      Contact.countDocuments({ isRead: false }),
       User.countDocuments(),
       Blog.find().sort({ createdAt: -1 }).limit(5),
       Event.find().sort({ createdAt: -1 }).limit(5)

@@ -60,9 +60,7 @@ userSchema.methods.comparePassword = async function(candidatePassword: string) {
   return bcrypt.compare(candidatePassword, this.password);
 };
 
-// Index for better query performance
-userSchema.index({ email: 1 });
-userSchema.index({ username: 1 });
+// Index for better query performance (email and username already indexed via unique: true)
 userSchema.index({ role: 1 });
 userSchema.index({ isActive: 1 });
 

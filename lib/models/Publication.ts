@@ -19,7 +19,7 @@ const publicationSchema = new mongoose.Schema({
   },
   pdfUrl: {
     type: String,
-    required: [true, 'PDF URL is required'],
+    required: false,
     trim: true
   },
   category: {

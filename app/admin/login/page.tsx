@@ -6,7 +6,7 @@ import { authApi, authStorage } from '@/lib/clientAuth';
 import { Eye, EyeOff, Lock, User } from '@/components/Icons';
 
 export default function AdminLogin() {
-  const [credentials, setCredentials] = useState({ username: '', password: '' });
+  const [credentials, setCredentials] = useState({ email: '', password: '' });
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -64,22 +64,22 @@ export default function AdminLogin() {
             )}
 
             <div>
-              <label htmlFor="username" className="block text-sm font-medium text-gray-700">
-                Username or Email
+              <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+                Email
               </label>
               <div className="mt-1 relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                   <User className="h-5 w-5 text-gray-400" />
                 </div>
                 <input
-                  id="username"
-                  name="username"
-                  type="text"
+                  id="email"
+                  name="email"
+                  type="email"
                   required
-                  value={credentials.username}
-                  onChange={(e) => setCredentials({ ...credentials, username: e.target.value })}
+                  value={credentials.email}
+                  onChange={(e) => setCredentials({ ...credentials, email: e.target.value })}
                   className="appearance-none block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                  placeholder="Enter your username or email"
+                  placeholder="Enter your email"
                 />
               </div>
             </div>
@@ -146,13 +146,13 @@ export default function AdminLogin() {
             <div className="mt-6 bg-gray-50 p-4 rounded-md">
               <h3 className="text-sm font-medium text-gray-900 mb-2">Admin Access:</h3>
               <div className="text-xs text-gray-600 space-y-1">
-                <p><strong>Username:</strong> admin</p>
+                <p><strong>Email:</strong> admin@absss.edu</p>
                 <p><strong>Password:</strong> admin123</p>
               </div>
               <div className="mt-3 pt-3 border-t border-gray-200">
                 <h3 className="text-sm font-medium text-gray-900 mb-2">Moderator Access:</h3>
                 <div className="text-xs text-gray-600 space-y-1">
-                  <p><strong>Username:</strong> moderator</p>
+                  <p><strong>Email:</strong> moderator@absss.edu</p>
                   <p><strong>Password:</strong> moderator123</p>
                 </div>
               </div>

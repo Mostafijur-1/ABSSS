@@ -1,12 +1,76 @@
+'use client';
+
+import { useState, useEffect } from 'react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import PublicationCard from '@/components/PublicationCard';
-import { publicationsApi } from '@/lib/api';
+import { Publication } from '@/lib/api';
 import { FileText, Search } from 'lucide-react';
 
-export default async function PublicationsPage() {
-  // Fetch all publications
-  const publications = await publicationsApi.getAll().catch(() => []);
+export default function PublicationsPage() {
+  const [publications, setPublications] = useState<Publication[]>([]);
+  const [filteredPublications, setFilteredPublications] = useState<Publication[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('all');
+
+  useEffect(() => {
+    fetchPublications();
+  }, []);
+
+  useEffect(() => {
+    filterPublications();
+  }, [publications, searchTerm, selectedCategory]);
+
+  const fetchPublications = async () => {
+    try {
+      const response = await fetch('/api/publications');
+      if (!response.ok) throw new Error('Failed to fetch publications');
+      const data = await response.json();
+      setPublications(data);
+    } catch (err: any) {
+      setError(err.message || 'Failed to load publications');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const filterPublications = () => {
+    let filtered = publications;
+
+    // Filter by search term
+    if (searchTerm) {
+      filtered = filtered.filter(publication =>
+        publication.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        publication.authors.some(author => author.toLowerCase().includes(searchTerm.toLowerCase())) ||
+        publication.abstract.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        publication.journal.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    }
+
+    // Filter by category
+    if (selectedCategory !== 'all') {
+      filtered = filtered.filter(publication => publication.category === selectedCategory);
+    }
+
+    setFilteredPublications(filtered);
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen">
+        <Header />
+        <div className="flex items-center justify-center h-64">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+            <p className="mt-4 text-gray-600">Loading publications...</p>
+          </div>
+        </div>
+        <Footer />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen">
@@ -32,23 +96,98 @@ export default async function PublicationsPage() {
               <h2 className="text-3xl font-bold text-gray-900">All Publications</h2>
             </div>
             <div className="text-sm text-gray-600">
-              {publications.length} publication{publications.length !== 1 ? 's' : ''}
+              {filteredPublications.length} publication{filteredPublications.length !== 1 ? 's' : ''}
+              {filteredPublications.length !== publications.length && ` of ${publications.length}`}
             </div>
           </div>
 
-          {publications.length > 0 ? (
+          {/* Search and Filter */}
+          <div className="bg-gray-50 rounded-lg p-6 mb-8">
+            <div className="flex flex-col sm:flex-row gap-4">
+              <div className="flex-1">
+                <div className="relative">
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                  <input
+                    type="text"
+                    placeholder="Search publications by title, author, abstract, or journal..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  />
+                </div>
+              </div>
+              <div className="sm:w-48">
+                <select
+                  value={selectedCategory}
+                  onChange={(e) => setSelectedCategory(e.target.value)}
+                  className="w-full px-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                >
+                  <option value="all">All Categories</option>
+                  <option value="research">Research Papers</option>
+                  <option value="review">Review Articles</option>
+                  <option value="case-study">Case Studies</option>
+                </select>
+              </div>
+            </div>
+            
+            {(searchTerm || selectedCategory !== 'all') && (
+              <div className="mt-4 flex items-center gap-2">
+                <span className="text-sm text-gray-600">Active filters:</span>
+                {searchTerm && (
+                  <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                    Search: "{searchTerm}"
+                    <button
+                      onClick={() => setSearchTerm('')}
+                      className="ml-1.5 inline-flex items-center justify-center w-4 h-4 rounded-full text-blue-400 hover:bg-blue-200 hover:text-blue-600"
+                    >
+                      ×
+                    </button>
+                  </span>
+                )}
+                {selectedCategory !== 'all' && (
+                  <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                    Category: {selectedCategory.replace('-', ' ')}
+                    <button
+                      onClick={() => setSelectedCategory('all')}
+                      className="ml-1.5 inline-flex items-center justify-center w-4 h-4 rounded-full text-green-400 hover:bg-green-200 hover:text-green-600"
+                    >
+                      ×
+                    </button>
+                  </span>
+                )}
+              </div>
+            )}
+          </div>
+
+          {filteredPublications.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {publications.map((publication) => (
+              {filteredPublications.map((publication) => (
                 <PublicationCard key={publication._id} publication={publication} />
               ))}
             </div>
           ) : (
             <div className="text-center py-12">
               <FileText className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">No Publications Yet</h3>
+              <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                {searchTerm || selectedCategory !== 'all' ? 'No publications found' : 'No Publications Yet'}
+              </h3>
               <p className="text-gray-600">
-                Our publications will appear here once they are published.
+                {searchTerm || selectedCategory !== 'all' 
+                  ? 'Try adjusting your search criteria or filters.' 
+                  : 'Our publications will appear here once they are published.'
+                }
               </p>
+              {(searchTerm || selectedCategory !== 'all') && (
+                <button
+                  onClick={() => {
+                    setSearchTerm('');
+                    setSelectedCategory('all');
+                  }}
+                  className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                >
+                  Clear Filters
+                </button>
+              )}
             </div>
           )}
         </div>
@@ -64,7 +203,7 @@ export default async function PublicationsPage() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="card p-6 text-center">
               <div className="bg-blue-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
                 <span className="text-2xl">🔬</span>
@@ -92,16 +231,6 @@ export default async function PublicationsPage() {
               <h3 className="text-lg font-semibold text-gray-900 mb-2">Case Studies</h3>
               <p className="text-gray-600 text-sm">
                 Detailed analysis of specific research projects and their outcomes
-              </p>
-            </div>
-
-            <div className="card p-6 text-center">
-              <div className="bg-orange-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-2xl">✍️</span>
-              </div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">Blog Posts</h3>
-              <p className="text-gray-600 text-sm">
-                Informative articles on scientific topics and research insights
               </p>
             </div>
           </div>

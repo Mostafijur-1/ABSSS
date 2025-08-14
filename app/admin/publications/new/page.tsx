@@ -5,6 +5,7 @@ import AdminLayout from '@/components/admin/AdminLayout';
 import { publicationsApi } from '@/lib/api';
 import { authStorage } from '@/lib/clientAuth';
 import { Publication } from '@/lib/api';
+import FileUpload from '@/components/FileUpload';
 import { 
   Plus, 
   Edit, 
@@ -93,8 +94,6 @@ export default function AdminPublications() {
       setSaving(true);
 
       try {
-        console.log('Starting publication submission...');
-        
         // Prepare publication data
         const publicationData: any = {
           title: formData.title,
@@ -102,14 +101,12 @@ export default function AdminPublications() {
           abstract: formData.abstract,
           category: formData.category,
           publishedDate: formData.publishedDate,
-          journal: formData.journal
+          journal: formData.journal,
+          pdfUrl: formData.pdfUrl
         };
-
-        console.log('Publication data prepared:', publicationData);
 
         // If PDF is selected, upload to Cloudinary first
         if (selectedFile) {
-          console.log('Uploading PDF file...');
           const formDataForUpload = new FormData();
           formDataForUpload.append('pdf', selectedFile);
           
@@ -119,35 +116,22 @@ export default function AdminPublications() {
             body: formDataForUpload
           });
           
-          console.log('Upload response status:', uploadResponse.status);
-          
           if (uploadResponse.ok) {
             const uploadResult = await uploadResponse.json();
-            console.log('Upload result:', uploadResult);
             publicationData.pdfUrl = uploadResult.url; // Add Cloudinary URL to publication data
-          } else {
-            const errorResult = await uploadResponse.text();
-            console.error('Upload failed:', errorResult);
-            throw new Error('Failed to upload PDF');
           }
         }
 
-        console.log('Final publication data:', publicationData);
-
         if (publication) {
-          console.log('Updating existing publication...');
           await publicationsApi.update(publication._id, publicationData);
         } else {
-          console.log('Creating new publication...');
           await publicationsApi.create(publicationData);
         }
         
-        console.log('Publication saved successfully');
         onSave();
         onClose();
         fetchPublications();
       } catch (err: any) {
-        console.error('Error saving publication:', err);
         setError(err.message || 'Failed to save publication');
       } finally {
         setSaving(false);
@@ -173,6 +157,7 @@ export default function AdminPublications() {
                 required
               />
             </div>
+            
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Authors (comma-separated)</label>
               <input
@@ -184,6 +169,7 @@ export default function AdminPublications() {
                 required
               />
             </div>
+            
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Abstract</label>
               <textarea
@@ -194,6 +180,7 @@ export default function AdminPublications() {
                 required
               />
             </div>
+            
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Category</label>
@@ -207,6 +194,7 @@ export default function AdminPublications() {
                   <option value="case-study">Case Study</option>
                 </select>
               </div>
+              
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Published Date</label>
                 <input
@@ -218,6 +206,7 @@ export default function AdminPublications() {
                 />
               </div>
             </div>
+            
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Journal</label>
               <input
@@ -228,37 +217,44 @@ export default function AdminPublications() {
                 required
               />
             </div>
+            
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">PDF File</label>
-              <input
-                type="file"
+              <FileUpload
+                label="Upload PDF"
                 accept=".pdf,application/pdf"
-                onChange={(e) => {
-                  const file = e.target.files?.[0] || null;
-                  setSelectedFile(file);
-                }}
-                className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                onFileSelect={(file) => setSelectedFile(file)}
+                maxSize={10}
+                required={!formData.pdfUrl}
               />
               {formData.pdfUrl && (
-                <p className="text-sm text-gray-600 mt-1">
-                  Current file: <a href={formData.pdfUrl} target="_blank" className="text-blue-600 hover:underline">View PDF</a>
-                </p>
+                <div className="mt-2">
+                  <a 
+                    href={formData.pdfUrl} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="text-blue-600 hover:text-blue-800 text-sm"
+                  >
+                    View current PDF
+                  </a>
+                </div>
               )}
             </div>
+
             <div className="flex justify-end space-x-3 pt-4">
               <button
                 type="button"
                 onClick={onClose}
-                className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-md"
+                className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
               >
                 Cancel
               </button>
               <button
                 type="submit"
                 disabled={saving}
-                className="px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-md disabled:opacity-50"
+                className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50"
               >
-                {saving ? 'Saving...' : 'Save'}
+                {saving ? 'Saving...' : (publication ? 'Update' : 'Create')}
               </button>
             </div>
           </form>
@@ -271,7 +267,10 @@ export default function AdminPublications() {
     return (
       <AdminLayout title="Publications">
         <div className="flex items-center justify-center h-64">
-          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600"></div>
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+            <p className="mt-4 text-gray-600">Loading publications...</p>
+          </div>
         </div>
       </AdminLayout>
     );
@@ -280,126 +279,165 @@ export default function AdminPublications() {
   return (
     <AdminLayout title="Publications">
       <div className="space-y-6">
-        {error && (
-          <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-md">
-            {error}
-          </div>
-        )}
-
         {/* Header */}
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <div className="flex justify-between items-center">
           <div>
             <h1 className="text-2xl font-bold text-gray-900">Publications</h1>
-            <p className="text-gray-600">Manage research publications and papers</p>
+            <p className="text-gray-600 mt-1">Manage research publications and papers</p>
           </div>
           <button
             onClick={handleAddNew}
-            className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+            className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 flex items-center gap-2"
           >
-            <Plus className="w-4 h-4 mr-2" />
-            Add Publication
+            <Plus className="h-4 w-4" />
+            New Publication
           </button>
         </div>
 
         {/* Filters */}
-        <div className="bg-white rounded-lg shadow p-6">
-          <div className="flex flex-col sm:flex-row gap-4">
-            <div className="flex-1">
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-                <input
-                  type="text"
-                  placeholder="Search publications..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-              </div>
-            </div>
-            <div className="sm:w-48">
-              <select
-                value={selectedCategory}
-                onChange={(e) => setSelectedCategory(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              >
-                <option value="all">All Categories</option>
-                <option value="research">Research</option>
-                <option value="review">Review</option>
-                <option value="case-study">Case Study</option>
-              </select>
+        <div className="flex flex-col sm:flex-row gap-4">
+          <div className="flex-1">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+              <input
+                type="text"
+                placeholder="Search publications..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
             </div>
           </div>
+          <select
+            value={selectedCategory}
+            onChange={(e) => setSelectedCategory(e.target.value)}
+            className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          >
+            <option value="all">All Categories</option>
+            <option value="research">Research</option>
+            <option value="review">Review</option>
+            <option value="case-study">Case Study</option>
+          </select>
         </div>
 
-        {/* Publications Grid */}
-        <div className="grid gap-6">
-          {filteredPublications.map((publication) => (
-            <div key={publication._id} className="bg-white rounded-lg shadow hover:shadow-md transition-shadow">
-              <div className="p-6">
-                <div className="flex justify-between items-start mb-4">
-                  <div className="flex-1">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-2">{publication.title}</h3>
-                    <div className="flex items-center text-sm text-gray-500 mb-2">
-                      <User className="w-4 h-4 mr-1" />
-                      <span>{publication.authors.join(', ')}</span>
-                    </div>
-                    <div className="flex items-center text-sm text-gray-500 mb-3">
-                      <Calendar className="w-4 h-4 mr-1" />
-                      <span>{new Date(publication.publishedDate).toLocaleDateString()}</span>
-                      <span className="mx-2">•</span>
-                      <span className="capitalize">{publication.category}</span>
-                      <span className="mx-2">•</span>
-                      <span>{publication.journal}</span>
-                    </div>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <a
-                      href={publication.pdfUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="p-2 text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
-                      title="View PDF"
-                    >
-                      <ExternalLink className="w-4 h-4" />
-                    </a>
-                    <button
-                      onClick={() => handleEdit(publication)}
-                      className="p-2 text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
-                      title="Edit"
-                    >
-                      <Edit className="w-4 h-4" />
-                    </button>
-                    <button
-                      onClick={() => handleDelete(publication._id)}
-                      className="p-2 text-gray-500 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                      title="Delete"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </button>
-                  </div>
-                </div>
-                <p className="text-gray-600 text-sm line-clamp-3">{publication.abstract}</p>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        {filteredPublications.length === 0 && (
-          <div className="text-center py-12">
-            <FileText className="mx-auto h-12 w-12 text-gray-400" />
-            <h3 className="mt-2 text-sm font-medium text-gray-900">No publications found</h3>
-            <p className="mt-1 text-sm text-gray-500">
-              {searchTerm || selectedCategory !== 'all' ? 'Try adjusting your search or filters.' : 'Get started by adding a new publication.'}
-            </p>
+        {/* Error Display */}
+        {error && (
+          <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
+            {error}
           </div>
         )}
+
+        {/* Publications List */}
+        <div className="bg-white shadow rounded-lg overflow-hidden">
+          <div className="overflow-x-auto">
+            <table className="min-w-full divide-y divide-gray-200">
+              <thead className="bg-gray-50">
+                <tr>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Publication
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Authors
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Category
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Date
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Actions
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="bg-white divide-y divide-gray-200">
+                {filteredPublications.map((publication) => (
+                  <tr key={publication._id} className="hover:bg-gray-50">
+                    <td className="px-6 py-4">
+                      <div>
+                        <div className="text-sm font-medium text-gray-900 line-clamp-2">
+                          {publication.title}
+                        </div>
+                        <div className="text-sm text-gray-500 line-clamp-1">
+                          {publication.journal}
+                        </div>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="text-sm text-gray-900">
+                        {publication.authors.slice(0, 2).join(', ')}
+                        {publication.authors.length > 2 && ` +${publication.authors.length - 2} more`}
+                      </div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <span className="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800 capitalize">
+                        {publication.category}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 text-sm text-gray-500">
+                      {new Date(publication.publishedDate).toLocaleDateString()}
+                    </td>
+                    <td className="px-6 py-4 text-sm font-medium">
+                      <div className="flex items-center space-x-3">
+                        {publication.pdfUrl && (
+                          <a
+                            href={publication.pdfUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-blue-600 hover:text-blue-900"
+                            title="View PDF"
+                          >
+                            <ExternalLink className="h-4 w-4" />
+                          </a>
+                        )}
+                        <button
+                          onClick={() => handleEdit(publication)}
+                          className="text-indigo-600 hover:text-indigo-900"
+                          title="Edit"
+                        >
+                          <Edit className="h-4 w-4" />
+                        </button>
+                        <button
+                          onClick={() => handleDelete(publication._id)}
+                          className="text-red-600 hover:text-red-900"
+                          title="Delete"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          
+          {filteredPublications.length === 0 && (
+            <div className="text-center py-12">
+              <FileText className="mx-auto h-12 w-12 text-gray-400" />
+              <h3 className="mt-2 text-sm font-medium text-gray-900">No publications</h3>
+              <p className="mt-1 text-sm text-gray-500">
+                {searchTerm || selectedCategory !== 'all' 
+                  ? 'No publications match your search criteria.' 
+                  : 'Get started by creating a new publication.'}
+              </p>
+            </div>
+          )}
+        </div>
       </div>
 
+      {/* Modal */}
       {showModal && (
         <PublicationModal
           publication={editingPublication}
-          onClose={() => setShowModal(false)}
-          onSave={() => setShowModal(false)}
+          onClose={() => {
+            setShowModal(false);
+            setEditingPublication(null);
+          }}
+          onSave={() => {
+            setShowModal(false);
+            setEditingPublication(null);
+          }}
         />
       )}
     </AdminLayout>
