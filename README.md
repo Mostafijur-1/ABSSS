@@ -1,252 +1,217 @@
-# ABSSS - Al Biruni Society of Scientific Studies
+# ABSSS Frontend
 
-A comprehensive full-stack web application for managing a university-based scientific society, featuring both public-facing content and a powerful admin dashboard.
+Frontend application for Al Biruni Society of Scientific Studies (ABSSS) built with Next.js, TypeScript, and Tailwind CSS.
 
-## 🚀 **Features**
+## 🚀 Features
 
-### **Public Website**
-- **Home Page** - Hero section, latest events, publications preview
-- **About Page** - Mission, vision, history, and values
-- **Events Page** - Upcoming and past events with filtering
-- **Publications Page** - Research articles and papers
-- **Members Page** - Faculty advisors, students, and alumni
-- **Contact Page** - Contact form and information
-
-### **Admin Dashboard** 🆕
-- **Authentication System** - Secure login with role-based access
-- **Dashboard Overview** - Statistics, analytics, and system health
-- **Events Management** - CRUD operations for events
-- **Publications Management** - Manage research papers and articles
-- **Members Management** - Handle society members and roles
-- **Contact Management** - View and respond to messages
-- **User Management** - Admin and moderator accounts
-- **Analytics** - Detailed insights and reporting
-
-## 🏗️ **Architecture**
-
-### **Frontend**
+- **Modern UI/UX** with responsive design
 - **Next.js 14** with App Router
 - **TypeScript** for type safety
 - **Tailwind CSS** for styling
-- **Component-based** architecture
-- **Responsive design** for all devices
+- **Server-side rendering** for better SEO
+- **Dynamic data fetching** from backend API
+- **Contact form** with backend integration
+- **Responsive navigation** with mobile menu
 
-### **Backend**
-- **Express.js** REST API
-- **MongoDB** with Mongoose ODM
-- **JWT Authentication** with role-based permissions
-- **MVC Pattern** (Models, Routes, Controllers)
-- **CORS** enabled for frontend integration
+## 📋 Prerequisites
 
-## 📊 **Database Models**
+- Node.js (v18 or higher)
+- npm or yarn
+- Backend API running (see backend README)
 
-1. **Event** - title, description, date, location, category, image, isUpcoming
-2. **Publication** - title, authors, abstract, pdfUrl, category, journal, publishedDate
-3. **Member** - name, role, designation, email, department, bio, image, isActive
-4. **Contact** - name, email, subject, message, isRead
-5. **User** - username, email, password, role, permissions, isActive
+## 🛠️ Installation
 
-## 🔐 **Authentication & Authorization**
+1. **Navigate to frontend directory:**
+   ```bash
+   cd frontend
+   ```
 
-### **User Roles**
-- **Admin** - Full access to all features
-- **Moderator** - Limited access based on permissions
+2. **Install dependencies:**
+   ```bash
+   npm install
+   ```
 
-### **Permissions**
-- `events` - Manage events
-- `publications` - Manage publications  
-- `members` - Manage members
-- `contacts` - View contact messages
-- `users` - Manage user accounts (admin only)
+3. **Set up environment variables:**
+   Create a `.env.local` file in the frontend directory:
+   ```env
+   NEXT_PUBLIC_API_URL=http://localhost:5000/api
+   ```
 
-## 🚀 **Quick Start**
+4. **Start the development server:**
+   ```bash
+   npm run dev
+   ```
 
-### **Prerequisites**
-- Node.js 18+ and npm
-- MongoDB (local or cloud)
+The application will be available at `http://localhost:3000`
 
-### **Backend Setup**
-```bash
-cd backend
-npm install
-# Create .env file with MongoDB URI
-echo "MONGODB_URI=mongodb://localhost:27017/absss" > .env
-echo "JWT_SECRET=your-secret-key" >> .env
-npm run seed  # Populate with sample data
-npm run dev   # Start server on port 5000
+## 📁 Project Structure
+
+```
+frontend/
+├── app/                    # Next.js App Router pages
+│   ├── about/             # About page
+│   ├── events/            # Events page
+│   ├── publications/      # Publications page
+│   ├── members/           # Members page
+│   ├── contact/           # Contact page
+│   ├── globals.css        # Global styles
+│   ├── layout.tsx         # Root layout
+│   └── page.tsx           # Home page
+├── components/            # Reusable components
+│   ├── Header.tsx         # Navigation header
+│   ├── Footer.tsx         # Site footer
+│   ├── EventCard.tsx      # Event display card
+│   ├── PublicationCard.tsx # Publication display card
+│   └── MemberCard.tsx     # Member display card
+├── lib/                   # Utility functions
+│   └── api.ts            # API integration
+├── public/               # Static assets
+└── package.json          # Dependencies and scripts
 ```
 
-### **Frontend Setup**
-```bash
-cd frontend
-npm install
-# Create .env.local with API URL
-echo "NEXT_PUBLIC_API_URL=http://localhost:5000/api" > .env.local
-npm run dev   # Start on port 3000
-```
+## 🎨 Pages
 
-## 🔑 **Default Admin Credentials**
+### Home Page (`/`)
+- Hero section with society introduction
+- Features overview
+- Latest events preview
+- Recent publications preview
+- Call-to-action sections
 
-### **Admin Account**
-- **Username:** `admin`
-- **Password:** `admin123`
-- **Role:** Full administrator access
+### About Page (`/about`)
+- Mission and vision statements
+- Society history timeline
+- Core values
+- Leadership team information
 
-### **Moderator Account**
-- **Username:** `moderator`
-- **Password:** `moderator123`
-- **Role:** Limited permissions
+### Events Page (`/events`)
+- List of upcoming events
+- Past events archive
+- Event categories explanation
+- Event submission information
 
-## 📱 **Access URLs**
+### Publications Page (`/publications`)
+- Research papers and articles
+- Publication categories
+- Submission guidelines
+- Publication statistics
 
-- **Public Website:** `http://localhost:3000`
-- **Admin Dashboard:** `http://localhost:3000/admin/login`
-- **Backend API:** `http://localhost:5000/api`
+### Members Page (`/members`)
+- Faculty advisors
+- Student members
+- Alumni members
+- Membership statistics
+- Join information
 
-## 🛠️ **API Endpoints**
+### Contact Page (`/contact`)
+- Contact form with backend integration
+- Contact information
+- Office hours
+- FAQ section
 
-### **Public Endpoints**
-- `GET /api/events` - Get all events
-- `GET /api/publications` - Get all publications
-- `GET /api/members` - Get all members
+## 🧩 Components
+
+### Header Component
+- Responsive navigation menu
+- Mobile hamburger menu
+- Logo and branding
+- Navigation links
+
+### Footer Component
+- Contact information
+- Social media links
+- Quick navigation
+- Copyright information
+
+### Card Components
+- **EventCard**: Displays event information with image, date, location
+- **PublicationCard**: Shows publication details with authors, abstract, PDF link
+- **MemberCard**: Presents member information with role, department, contact
+
+## 🔧 Configuration
+
+### Tailwind CSS
+The project uses Tailwind CSS for styling with custom configuration:
+- Custom color palette (primary, secondary)
+- Custom component classes
+- Responsive design utilities
+
+### TypeScript
+- Strict type checking enabled
+- Custom type definitions for API responses
+- Path aliases configured (`@/*`)
+
+### Next.js
+- App Router configuration
+- Image optimization
+- API route handling
+- Environment variables
+
+## 📱 Responsive Design
+
+The application is fully responsive with breakpoints:
+- **Mobile**: < 768px
+- **Tablet**: 768px - 1024px
+- **Desktop**: > 1024px
+
+## 🔌 API Integration
+
+The frontend communicates with the backend API through:
+- **API Base URL**: Configurable via environment variables
+- **Data Fetching**: Server-side and client-side data fetching
+- **Error Handling**: Graceful error handling for API failures
+- **Type Safety**: TypeScript interfaces for API responses
+
+### API Endpoints Used
+- `GET /api/events` - Fetch events
+- `GET /api/events/upcoming` - Fetch upcoming events
+- `GET /api/publications` - Fetch publications
+- `GET /api/publications/recent` - Fetch recent publications
+- `GET /api/members` - Fetch members
 - `POST /api/contact` - Submit contact form
 
-### **Admin Endpoints** (Require Authentication)
-- `POST /api/auth/login` - Admin login
-- `GET /api/dashboard/stats` - Dashboard statistics
-- `GET /api/auth/users` - Get all users (admin only)
-- `POST /api/events` - Create event
-- `PUT /api/events/:id` - Update event
-- `DELETE /api/events/:id` - Delete event
-- And many more CRUD operations...
+## 🚀 Deployment
 
-## 📁 **Project Structure**
-
-```
-absss/
-├── backend/                 # Express.js + MongoDB API
-│   ├── config/             # Database configuration
-│   ├── controllers/        # API controllers
-│   ├── models/            # MongoDB models
-│   ├── routes/            # API routes
-│   ├── middleware/        # Authentication middleware
-│   ├── scripts/           # Database seeding
-│   └── server.js          # Main server file
-├── frontend/               # Next.js 14 + TypeScript
-│   ├── app/               # App Router pages
-│   │   ├── admin/         # Admin dashboard pages
-│   │   └── ...            # Public pages
-│   ├── components/        # React components
-│   │   ├── admin/         # Admin-specific components
-│   │   └── ...            # Public components
-│   ├── lib/              # API integration & auth
-│   └── ...               # Configuration files
-└── README.md             # This file
-```
-
-## 🎨 **Admin Dashboard Features**
-
-### **Dashboard Overview**
-- Real-time statistics and metrics
-- Recent activity feeds
-- Quick action buttons
-- System health monitoring
-
-### **Content Management**
-- **Events:** Create, edit, delete events with rich text editor
-- **Publications:** Manage research papers with file uploads
-- **Members:** Handle member profiles and roles
-- **Messages:** View and respond to contact form submissions
-
-### **User Management**
-- Create and manage admin/moderator accounts
-- Role-based permission system
-- User activity tracking
-- Password management
-
-### **Analytics & Reporting**
-- Monthly activity charts
-- Category distribution analysis
-- User engagement metrics
-- System performance monitoring
-
-## 🔧 **Configuration**
-
-### **Environment Variables**
-
-**Backend (.env)**
-```env
-MONGODB_URI=mongodb://localhost:27017/absss
-JWT_SECRET=your-secret-key
-PORT=5000
-NODE_ENV=development
-```
-
-**Frontend (.env.local)**
-```env
-NEXT_PUBLIC_API_URL=http://localhost:5000/api
-```
-
-## 🚀 **Deployment**
-
-### **Backend Deployment**
-1. Set up MongoDB (Atlas or local)
-2. Configure environment variables
-3. Deploy to Heroku, Vercel, or your preferred platform
-4. Run database seeding
-
-### **Frontend Deployment**
-1. Update API URL in environment variables
-2. Build the application: `npm run build`
-3. Deploy to Vercel, Netlify, or your preferred platform
-
-## 🧪 **Testing**
-
-### **Backend Testing**
+### Build for Production
 ```bash
-cd backend
-npm test
+npm run build
 ```
 
-### **Frontend Testing**
+### Start Production Server
 ```bash
-cd frontend
-npm test
+npm start
 ```
 
-## 🤝 **Contributing**
+### Environment Variables for Production
+```env
+NEXT_PUBLIC_API_URL=https://your-backend-api.com/api
+```
+
+## 🧪 Development
+
+### Available Scripts
+- `npm run dev` - Start development server
+- `npm run build` - Build for production
+- `npm run start` - Start production server
+- `npm run lint` - Run ESLint
+
+### Code Style
+- ESLint configuration for code quality
+- Prettier for code formatting
+- TypeScript strict mode enabled
+
+## 🔗 Backend Integration
+
+This frontend is designed to work with the ABSSS backend API. Make sure the backend is running and accessible before starting the frontend.
+
+## 🤝 Contributing
 
 1. Fork the repository
 2. Create a feature branch
 3. Make your changes
-4. Add tests if applicable
+4. Test thoroughly
 5. Submit a pull request
 
-## 📄 **License**
+## 📄 License
 
-This project is licensed under the MIT License.
-
-## 🆘 **Support**
-
-For support and questions:
-- Create an issue in the repository
-- Contact the development team
-- Check the documentation in `/docs` folder
-
-## 🔄 **Updates & Maintenance**
-
-### **Regular Maintenance**
-- Update dependencies regularly
-- Monitor system logs
-- Backup database regularly
-- Review and update security measures
-
-### **Feature Updates**
-- Admin dashboard enhancements
-- New content management features
-- Improved analytics and reporting
-- Enhanced user experience
-
----
-
-**Built with ❤️ for the Al Biruni Society of Scientific Studies**
+This project is licensed under the MIT License. 
