@@ -48,6 +48,7 @@ export interface Member {
   role: 'faculty' | 'student' | 'alumni';
   designation: string;
   image?: string;
+  imageUrl?: string;
   email: string;
   department: string;
   bio: string;

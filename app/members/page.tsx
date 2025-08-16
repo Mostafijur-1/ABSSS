@@ -1,14 +1,30 @@
+
+"use client";
+import React, { useEffect, useState } from 'react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import MemberCard from '@/components/MemberCard';
 import { membersApi } from '@/lib/api';
 import { Users, Filter } from 'lucide-react';
 
-export default async function MembersPage() {
-  // Fetch all members
-  const allMembers = await membersApi.getAll().catch(() => []);
-  
-  // Separate members by role
+export default function MembersPage() {
+  const [allMembers, setAllMembers] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchMembers = async () => {
+      try {
+        const data = await membersApi.getAll();
+        setAllMembers(data);
+      } catch (error) {
+        setAllMembers([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchMembers();
+  }, []);
+
   const facultyMembers = allMembers.filter(member => member.role === 'faculty');
   const studentMembers = allMembers.filter(member => member.role === 'student');
   const alumniMembers = allMembers.filter(member => member.role === 'alumni');
@@ -16,7 +32,6 @@ export default async function MembersPage() {
   return (
     <div className="min-h-screen">
       <Header />
-      
       {/* Hero Section */}
       <section className="bg-gradient-to-br from-primary-600 to-primary-800 text-white">
         <div className="container-max section-padding text-center">
@@ -35,8 +50,9 @@ export default async function MembersPage() {
             <Users className="w-8 h-8 text-primary-600 mr-3" />
             <h2 className="text-3xl font-bold text-gray-900">Faculty Advisors</h2>
           </div>
-
-          {facultyMembers.length > 0 ? (
+          {loading ? (
+            <div className="text-center py-12">Loading members...</div>
+          ) : facultyMembers.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {facultyMembers.map((member) => (
                 <MemberCard key={member._id} member={member} />
@@ -61,8 +77,9 @@ export default async function MembersPage() {
             <Filter className="w-8 h-8 text-primary-600 mr-3" />
             <h2 className="text-3xl font-bold text-gray-900">Student Members</h2>
           </div>
-
-          {studentMembers.length > 0 ? (
+          {loading ? (
+            <div className="text-center py-12">Loading members...</div>
+          ) : studentMembers.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {studentMembers.map((member) => (
                 <MemberCard key={member._id} member={member} />
@@ -88,7 +105,6 @@ export default async function MembersPage() {
               <Users className="w-8 h-8 text-primary-600 mr-3" />
               <h2 className="text-3xl font-bold text-gray-900">Alumni Members</h2>
             </div>
-
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {alumniMembers.map((member) => (
                 <MemberCard key={member._id} member={member} />
@@ -107,7 +123,6 @@ export default async function MembersPage() {
               Our growing community of scientists and researchers
             </p>
           </div>
-
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div className="card p-6 text-center">
               <div className="text-3xl font-bold text-primary-600 mb-2">
@@ -115,21 +130,18 @@ export default async function MembersPage() {
               </div>
               <div className="text-gray-600">Total Members</div>
             </div>
-
             <div className="card p-6 text-center">
               <div className="text-3xl font-bold text-primary-600 mb-2">
                 {facultyMembers.length}
               </div>
               <div className="text-gray-600">Faculty Advisors</div>
             </div>
-
             <div className="card p-6 text-center">
               <div className="text-3xl font-bold text-primary-600 mb-2">
                 {studentMembers.length}
               </div>
               <div className="text-gray-600">Student Members</div>
             </div>
-
             <div className="card p-6 text-center">
               <div className="text-3xl font-bold text-primary-600 mb-2">
                 {alumniMembers.length}
@@ -149,7 +161,6 @@ export default async function MembersPage() {
               Become part of our scientific society and contribute to advancing research and innovation
             </p>
           </div>
-
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="card p-6 text-center">
               <div className="bg-primary-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -163,7 +174,6 @@ export default async function MembersPage() {
                 Apply Now
               </a>
             </div>
-
             <div className="card p-6 text-center">
               <div className="bg-primary-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
                 <span className="text-2xl">👨‍🏫</span>
@@ -176,7 +186,6 @@ export default async function MembersPage() {
                 Contact Us
               </a>
             </div>
-
             <div className="card p-6 text-center">
               <div className="bg-primary-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
                 <span className="text-2xl">🤝</span>
@@ -192,8 +201,7 @@ export default async function MembersPage() {
           </div>
         </div>
       </section>
-
       <Footer />
     </div>
   );
-} 
+}

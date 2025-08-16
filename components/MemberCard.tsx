@@ -31,9 +31,9 @@ const MemberCard = ({ member }: MemberCardProps) => {
   return (
     <div className="card p-6 text-center">
       <div className="mb-4">
-        {member.image ? (
+        {(member.image || member.imageUrl) ? (
           <img
-            src={member.image}
+            src={member.image || member.imageUrl}
             alt={member.name}
             className="w-24 h-24 rounded-full mx-auto object-cover border-4 border-gray-200"
           />
