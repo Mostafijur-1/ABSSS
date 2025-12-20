@@ -9,6 +9,7 @@ export default function AdminLogin() {
   const [credentials, setCredentials] = useState({ email: '', password: '' });
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [signupLoading, setSignupLoading] = useState(false);
   const [error, setError] = useState('');
   const router = useRouter();
 
@@ -37,6 +38,8 @@ export default function AdminLogin() {
       setLoading(false);
     }
   };
+
+
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
@@ -133,31 +136,6 @@ export default function AdminLogin() {
             </div>
           </form>
 
-          <div className="mt-6">
-            <div className="relative">
-              <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-gray-300" />
-              </div>
-              <div className="relative flex justify-center text-sm">
-                <span className="px-2 bg-white text-gray-500">Demo Credentials</span>
-              </div>
-            </div>
-
-            <div className="mt-6 bg-gray-50 p-4 rounded-md">
-              <h3 className="text-sm font-medium text-gray-900 mb-2">Admin Access:</h3>
-              <div className="text-xs text-gray-600 space-y-1">
-                <p><strong>Email:</strong> admin@absss.edu</p>
-                <p><strong>Password:</strong> admin123</p>
-              </div>
-              <div className="mt-3 pt-3 border-t border-gray-200">
-                <h3 className="text-sm font-medium text-gray-900 mb-2">Moderator Access:</h3>
-                <div className="text-xs text-gray-600 space-y-1">
-                  <p><strong>Email:</strong> moderator@absss.edu</p>
-                  <p><strong>Password:</strong> moderator123</p>
-                </div>
-              </div>
-            </div>
-          </div>
         </div>
       </div>
     </div>
