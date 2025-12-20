@@ -187,6 +187,24 @@ npm start
 NEXT_PUBLIC_API_URL=https://your-backend-api.com/api
 ```
 
+### Vercel Deployment
+
+- **Required environment variables (set these in the Vercel project dashboard):**
+   - `MONGODB_URI` - MongoDB connection string
+   - `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`, `CLOUDINARY_API_SECRET` - for Cloudinary uploads
+   - `JWT_SECRET` (or any auth secret your API expects)
+   - Any other `NEXT_PUBLIC_*` variables your app reads
+
+- **Quick deploy steps:**
+   1. Push this repository to GitHub/GitLab.
+   2. In Vercel, import the repository and select the project.
+   3. In Project Settings → Environment Variables, add the variables listed above.
+   4. Trigger a deployment (Vercel will run `npm run vercel-build`).
+
+- **Notes:**
+   - The project uses serverless-friendly MongoDB connection caching in `lib/database.ts`.
+   - Do not commit `.env` files—use Vercel's Environment Variables UI instead.
+
 ## 🧪 Development
 
 ### Available Scripts
