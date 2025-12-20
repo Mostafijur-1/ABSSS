@@ -14,7 +14,7 @@ export async function GET(request: NextRequest) {
       query = { category };
     }
     
-    let sortOptions = { publishedDate: -1 };
+    let sortOptions: any = { publishedDate: -1 };
     let limit = undefined;
     
     if (recent === 'true') {
