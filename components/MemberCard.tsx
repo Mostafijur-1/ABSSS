@@ -8,11 +8,11 @@ interface MemberCardProps {
 const MemberCard = ({ member }: MemberCardProps) => {
   const getRoleColor = (role: string) => {
     const colors = {
-      faculty: 'bg-blue-100 text-blue-800',
-      student: 'bg-green-100 text-green-800',
-      alumni: 'bg-purple-100 text-purple-800',
+      faculty: 'border border-sky-400/40 bg-sky-500/15 text-sky-100',
+      student: 'border border-emerald-400/40 bg-emerald-500/15 text-emerald-100',
+      alumni: 'border border-violet-400/40 bg-violet-500/15 text-violet-100',
     };
-    return colors[role as keyof typeof colors] || 'bg-gray-100 text-gray-800';
+    return colors[role as keyof typeof colors] || 'border border-slate-400/40 bg-slate-500/15 text-slate-100';
   };
 
   const getRoleIcon = (role: string) => {
@@ -29,16 +29,16 @@ const MemberCard = ({ member }: MemberCardProps) => {
   };
 
   return (
-    <div className="card p-6 text-center">
+    <div className="card border-white/10 bg-slate-950/60 p-6 text-center text-slate-50 transition-transform duration-200 hover:-translate-y-1.5 hover:shadow-[0_18px_45px_rgba(15,23,42,0.9)]">
       <div className="mb-4">
         {(member.image || member.imageUrl) ? (
           <img
             src={member.image || member.imageUrl}
             alt={member.name}
-            className="w-24 h-24 rounded-full mx-auto object-cover border-4 border-gray-200"
+            className="mx-auto h-24 w-24 rounded-full border-4 border-white/80 object-cover shadow-[0_12px_30px_rgba(15,23,42,0.9)]"
           />
         ) : (
-          <div className="w-24 h-24 rounded-full mx-auto bg-gray-200 flex items-center justify-center text-2xl">
+          <div className="mx-auto flex h-24 w-24 items-center justify-center rounded-full bg-slate-800/70 text-2xl">
             {getRoleIcon(member.role)}
           </div>
         )}
@@ -51,23 +51,23 @@ const MemberCard = ({ member }: MemberCardProps) => {
         </span>
       </div>
 
-      <h3 className="text-lg font-semibold text-gray-900 mb-1">
+      <h3 className="mb-1 text-base font-semibold text-white">
         {member.name}
       </h3>
 
-      <p className="text-primary-600 font-medium mb-3">
+      <p className="mb-3 text-sm font-medium text-sky-200">
         {member.designation}
       </p>
 
       {member.department && (
-        <div className="flex items-center justify-center text-sm text-gray-500 mb-3">
+        <div className="mb-3 flex items-center justify-center text-xs text-slate-300">
           <Building className="w-4 h-4 mr-2" />
           {member.department}
         </div>
       )}
 
       {member.bio && (
-        <p className="text-gray-600 text-sm mb-4 line-clamp-3">
+        <p className="mb-4 line-clamp-3 text-sm text-slate-200">
           {member.bio}
         </p>
       )}
@@ -75,7 +75,7 @@ const MemberCard = ({ member }: MemberCardProps) => {
       <div className="flex justify-center">
         <a
           href={`mailto:${member.email}`}
-          className="inline-flex items-center text-primary-600 hover:text-primary-700 font-medium text-sm"
+          className="inline-flex items-center text-sm font-medium text-sky-200 hover:text-sky-100"
         >
           <Mail className="w-4 h-4 mr-1" />
           Contact

@@ -18,44 +18,44 @@ const PublicationCard = ({ publication }: PublicationCardProps) => {
 
   const getCategoryColor = (category: string) => {
     const colors = {
-      research: 'bg-blue-100 text-blue-800',
-      review: 'bg-green-100 text-green-800',
-      'case-study': 'bg-purple-100 text-purple-800',
+      research: 'border border-sky-400/40 bg-sky-500/15 text-sky-100',
+      review: 'border border-emerald-400/40 bg-emerald-500/15 text-emerald-100',
+      'case-study': 'border border-violet-400/40 bg-violet-500/15 text-violet-100',
     };
-    return colors[category as keyof typeof colors] || 'bg-gray-100 text-gray-800';
+    return colors[category as keyof typeof colors] || 'border border-slate-400/40 bg-slate-500/15 text-slate-100';
   };
 
   return (
-    <div className="card p-6 hover:shadow-lg transition-shadow">
-      <div className="flex items-center justify-between mb-3">
+    <div className="card border-white/10 bg-slate-950/60 p-6 text-slate-50 transition-transform duration-200 hover:-translate-y-1.5 hover:shadow-[0_18px_45px_rgba(15,23,42,0.9)]">
+      <div className="mb-3 flex items-center justify-between">
         <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getCategoryColor(publication.category)}`}>
           <FileText className="w-3 h-3 mr-1" />
           {publication.category.replace('-', ' ').charAt(0).toUpperCase() + publication.category.slice(1).replace('-', ' ')}
         </span>
-        <span className="text-xs text-gray-500">
+        <span className="text-xs text-slate-300">
           {publication.journal}
         </span>
       </div>
 
       <Link href={`/publications/${publication._id}`}>
-        <h3 className="text-xl font-semibold text-gray-900 mb-3 line-clamp-2 hover:text-blue-600 cursor-pointer transition-colors">
+        <h3 className="mb-3 line-clamp-2 cursor-pointer text-lg font-semibold text-white transition-colors hover:text-sky-200">
           {publication.title}
         </h3>
       </Link>
 
-      <div className="flex items-center text-sm text-gray-500 mb-3">
+      <div className="mb-3 flex items-center text-xs text-slate-300">
         <Users className="w-4 h-4 mr-2" />
         <span className="line-clamp-1">
           {publication.authors.join(', ')}
         </span>
       </div>
 
-      <p className="text-gray-600 mb-4 line-clamp-3">
+      <p className="mb-4 line-clamp-3 text-sm text-slate-200">
         {publication.abstract}
       </p>
 
       <div className="flex items-center justify-between">
-        <div className="flex items-center text-sm text-gray-500">
+        <div className="flex items-center text-xs text-slate-300">
           <Calendar className="w-4 h-4 mr-2" />
           {formatDate(publication.publishedDate)}
         </div>
@@ -63,7 +63,7 @@ const PublicationCard = ({ publication }: PublicationCardProps) => {
         <div className="flex items-center gap-3">
           <Link
             href={`/publications/${publication._id}`}
-            className="inline-flex items-center text-blue-600 hover:text-blue-700 font-medium text-sm"
+            className="inline-flex items-center text-sm font-medium text-sky-200 hover:text-sky-100"
           >
             Read More
           </Link>
@@ -72,7 +72,7 @@ const PublicationCard = ({ publication }: PublicationCardProps) => {
               href={publication.pdfUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center text-primary-600 hover:text-primary-700 font-medium text-sm"
+              className="inline-flex items-center text-sm font-medium text-sky-200 hover:text-sky-100"
               onClick={(e) => e.stopPropagation()}
             >
               <ExternalLink className="w-4 h-4 mr-1" />

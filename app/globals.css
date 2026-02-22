@@ -5,26 +5,54 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
 @layer base {
+  :root {
+    --deep-twilight: #03045e;
+    --french-blue: #023e8a;
+    --bright-teal-blue: #0077b6;
+    --blue-green: #0096c7;
+    --turquoise-surf: #00b4d8;
+    --sky-aqua: #48cae4;
+    --frosted-blue: #90e0ef;
+    --frosted-blue-2: #ade8f4;
+    --light-cyan: #caf0f8;
+  }
+
   html {
     font-family: 'Inter', sans-serif;
   }
   
   body {
-    @apply bg-gray-50 text-gray-900;
+    @apply antialiased scroll-smooth;
+    background: radial-gradient(circle at top left, #00b4d8 0, #03045e 40%), radial-gradient(circle at bottom right, #48cae4 0, #023e8a 45%), linear-gradient(180deg, #03045e, #020617);
+    color: #e2f3ff;
   }
 }
 
 @layer components {
   .btn-primary {
-    @apply bg-primary-600 hover:bg-primary-700 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200;
+    @apply inline-flex items-center justify-center gap-2 rounded-lg px-5 py-2.5 text-sm font-semibold shadow-sm transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 active:translate-y-px;
+    background-color: var(--bright-teal-blue);
+    color: #fdfdfd;
+    box-shadow: 0 14px 35px rgba(0, 119, 182, 0.55);
+    border-radius: 9999px;
+    border: 1px solid rgba(144, 224, 239, 0.35);
+    --tw-ring-color: rgba(0, 180, 216, 0.7);
+    --tw-ring-offset-color: rgba(3, 4, 94, 1);
   }
   
   .btn-secondary {
-    @apply bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium py-2 px-4 rounded-lg transition-colors duration-200;
+    @apply inline-flex items-center justify-center gap-2 rounded-lg px-5 py-2.5 text-sm font-semibold shadow-sm transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 active:translate-y-px;
+    background-color: rgba(3, 4, 94, 0.8);
+    color: var(--light-cyan);
+    border-radius: 9999px;
+    border: 1px solid rgba(144, 224, 239, 0.4);
+    box-shadow: 0 10px 30px rgba(3, 4, 94, 0.7);
+    --tw-ring-color: rgba(0, 180, 216, 0.7);
+    --tw-ring-offset-color: rgba(3, 4, 94, 1);
   }
   
   .card {
-    @apply bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200;
+    @apply rounded-xl shadow-sm backdrop-blur-sm transition-all duration-200 hover:-translate-y-1 hover:shadow-lg;
   }
   
   .section-padding {
@@ -47,5 +75,94 @@
     -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
     overflow: hidden;
+  }
+
+  .hero-gradient {
+    position: relative;
+    overflow: hidden;
+    background-image:
+      radial-gradient(circle at 10% 0%, rgba(72, 202, 228, 0.32), transparent 55%),
+      radial-gradient(circle at 80% 100%, rgba(0, 180, 216, 0.34), transparent 55%),
+      linear-gradient(to bottom right, var(--bright-teal-blue), var(--deep-twilight));
+    color: white;
+    background-attachment: fixed;
+  }
+
+  .hero-gradient::before {
+    content: '';
+    position: absolute;
+    inset: -20%;
+    background:
+      radial-gradient(circle at 10% 20%, rgba(173, 232, 244, 0.35), transparent 55%),
+      radial-gradient(circle at 80% 0%, rgba(144, 224, 239, 0.32), transparent 55%),
+      radial-gradient(circle at 80% 80%, rgba(72, 202, 228, 0.34), transparent 55%);
+    opacity: 0.9;
+    pointer-events: none;
+  }
+
+  .hero-gradient::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom, rgba(15, 23, 42, 0.4), transparent 30%);
+    pointer-events: none;
+  }
+
+  .bg-grid-faint {
+    background-image: linear-gradient(to right, rgba(148, 163, 184, 0.12) 1px, transparent 1px), linear-gradient(to bottom, rgba(148, 163, 184, 0.12) 1px, transparent 1px);
+    background-size: 32px 32px;
+  }
+
+  .animate-fade-in-up {
+    opacity: 0;
+    animation: fade-in-up 700ms ease-out forwards;
+  }
+
+  .animate-fade-in-up-slow {
+    opacity: 0;
+    animation: fade-in-up 900ms ease-out forwards;
+  }
+
+  .animate-float-slow {
+    animation: float 10s ease-in-out infinite;
+  }
+
+  .animate-blob-slow {
+    animation: blob 22s ease-in-out infinite;
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-12px);
+  }
+}
+
+@keyframes blob {
+  0% {
+    transform: translate3d(0px, 0px, 0px) scale(1);
+  }
+  33% {
+    transform: translate3d(18px, -24px, 0px) scale(1.04);
+  }
+  66% {
+    transform: translate3d(-12px, 12px, 0px) scale(0.98);
+  }
+  100% {
+    transform: translate3d(0px, 0px, 0px) scale(1);
+  }
+}
+
+@keyframes fade-in-up {
+  0% {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0px);
   }
 } 
