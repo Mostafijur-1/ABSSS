@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { connectDB } from '@/lib/database';
 import Blog from '@/lib/models/Blog';
 import Event from '@/lib/models/Event';
@@ -6,9 +6,13 @@ import Member from '@/lib/models/Member';
 import Publication from '@/lib/models/Publication';
 import Contact from '@/lib/models/Contact';
 import User from '@/lib/models/User';
+import { getAuthErrorStatus, requireAuth } from '@/lib/auth';
 
-export async function GET() {
+export const dynamic = 'force-dynamic';
+
+export async function GET(request: NextRequest) {
   try {
+    requireAuth(request);
     await connectDB();
     
     // Get all stats in parallel
@@ -67,6 +71,9 @@ export async function GET() {
     return NextResponse.json(stats);
   } catch (error) {
     console.error('Dashboard stats error:', error);
+    if (error instanceof Error && ['Authentication required', 'Insufficient permissions'].includes(error.message)) {
+      return NextResponse.json({ message: error.message }, { status: getAuthErrorStatus(error) });
+    }
     return NextResponse.json(
       { message: 'Failed to fetch dashboard stats' },
       { status: 500 }

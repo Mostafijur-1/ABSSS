@@ -2,16 +2,71 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import EventCard from '@/components/EventCard';
 import PublicationCard from '@/components/PublicationCard';
-import { eventsApi, publicationsApi } from '@/lib/api';
+import Event from '@/lib/models/Event';
+import Publication from '@/lib/models/Publication';
+import { connectDB } from '@/lib/database';
+import { Event as EventType, Publication as PublicationType } from '@/lib/api';
 import { ArrowRight, Sparkles, Users, Calendar, BookOpen, Zap, Globe, Trophy } from 'lucide-react';
 import Link from 'next/link';
 
+export const dynamic = 'force-dynamic';
+
+function serializeEvent(event: any): EventType {
+  return {
+    ...event,
+    _id: event._id.toString(),
+    date: event.date?.toISOString?.() || event.date,
+    createdAt: event.createdAt?.toISOString?.() || event.createdAt,
+    updatedAt: event.updatedAt?.toISOString?.() || event.updatedAt,
+  };
+}
+
+function serializePublication(publication: any): PublicationType {
+  return {
+    ...publication,
+    _id: publication._id.toString(),
+    publishedDate: publication.publishedDate?.toISOString?.() || publication.publishedDate,
+    createdAt: publication.createdAt?.toISOString?.() || publication.createdAt,
+    updatedAt: publication.updatedAt?.toISOString?.() || publication.updatedAt,
+  };
+}
+
+async function getHomePageData() {
+  try {
+    await connectDB();
+
+    let events = await Event.find({ isUpcoming: true })
+      .sort({ date: 1 })
+      .limit(3)
+      .lean();
+
+    if (events.length === 0) {
+      events = await Event.find({ date: { $gte: new Date() } })
+        .sort({ date: 1 })
+        .limit(3)
+        .lean();
+    }
+
+    const publications = await Publication.find({})
+      .sort({ publishedDate: -1 })
+      .limit(3)
+      .lean();
+
+    return {
+      upcomingEvents: events.map(serializeEvent),
+      recentPublications: publications.map(serializePublication),
+    };
+  } catch (error) {
+    console.error('Homepage data fetch failed:', error);
+    return {
+      upcomingEvents: [],
+      recentPublications: [],
+    };
+  }
+}
+
 export default async function HomePage() {
-  // Fetch data from API
-  const [upcomingEvents, recentPublications] = await Promise.all([
-    eventsApi.getUpcoming().catch(() => []),
-    publicationsApi.getRecent().catch(() => []),
-  ]);
+  const { upcomingEvents, recentPublications } = await getHomePageData();
 
   return (
     <div className="min-h-screen">
@@ -33,7 +88,7 @@ export default async function HomePage() {
                 <span className="text-sm text-primary-100 font-medium">Welcome to Scientific Excellence</span>
               </div>
               
-              <h1 className="text-6xl font-bold mb-6 leading-tight">
+              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6 leading-tight">
                 Advancing 
                 <span className="block bg-gradient-to-r from-primary-200 to-blue-200 bg-clip-text text-transparent">Scientific Research</span>
               </h1>
@@ -53,7 +108,7 @@ export default async function HomePage() {
               </div>
 
               {/* Quick Stats */}
-              <div className="grid grid-cols-3 gap-4 mt-12">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-12">
                 <div>
                   <div className="text-2xl font-bold text-primary-200">50+</div>
                   <div className="text-sm text-primary-300">Active Members</div>
@@ -213,7 +268,7 @@ export default async function HomePage() {
         </div>
         
         <div className="container-max text-center relative z-10">
-          <h2 className="text-5xl font-bold mb-6">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-6">
             Ready to Join Our Community?
           </h2>
           <p className="text-xl text-primary-100 mb-10 max-w-2xl mx-auto leading-relaxed">

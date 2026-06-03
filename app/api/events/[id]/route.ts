@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { connectDB } from '@/lib/database';
 import Event from '@/lib/models/Event';
+import { getAuthErrorStatus, requirePermission } from '@/lib/auth';
 
 export async function GET(
   request: NextRequest,
@@ -32,6 +33,7 @@ export async function PUT(
   { params }: { params: { id: string } }
 ) {
   try {
+    requirePermission(request, 'events');
     await connectDB();
     const body = await request.json();
     
@@ -51,6 +53,9 @@ export async function PUT(
     return NextResponse.json(updatedEvent);
   } catch (error) {
     console.error('Error updating event:', error);
+    if (error instanceof Error && ['Authentication required', 'Insufficient permissions'].includes(error.message)) {
+      return NextResponse.json({ message: error.message }, { status: getAuthErrorStatus(error) });
+    }
     return NextResponse.json(
       { message: 'Failed to update event' },
       { status: 500 }
@@ -63,6 +68,7 @@ export async function DELETE(
   { params }: { params: { id: string } }
 ) {
   try {
+    requirePermission(request, 'events');
     await connectDB();
     const deletedEvent = await Event.findByIdAndDelete(params.id);
     
@@ -76,6 +82,9 @@ export async function DELETE(
     return NextResponse.json({ message: 'Event deleted successfully' });
   } catch (error) {
     console.error('Error deleting event:', error);
+    if (error instanceof Error && ['Authentication required', 'Insufficient permissions'].includes(error.message)) {
+      return NextResponse.json({ message: error.message }, { status: getAuthErrorStatus(error) });
+    }
     return NextResponse.json(
       { message: 'Failed to delete event' },
       { status: 500 }

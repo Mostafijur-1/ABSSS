@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { connectDB } from '@/lib/database';
 import Blog from '@/lib/models/Blog';
+import { getAuthErrorStatus, requirePermission } from '@/lib/auth';
 
 export async function GET(request: NextRequest) {
   try {
@@ -36,6 +37,7 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
+    requirePermission(request, 'publications');
     await connectDB();
 
     // Guard against multipart/form-data requests (FormData). The route
@@ -58,6 +60,9 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(savedBlog, { status: 201 });
   } catch (error) {
     console.error('Error creating blog:', error);
+    if (error instanceof Error && ['Authentication required', 'Insufficient permissions'].includes(error.message)) {
+      return NextResponse.json({ message: error.message }, { status: getAuthErrorStatus(error) });
+    }
 
     // If Mongoose validation failed, return details to the client to
     // help diagnose missing/invalid fields instead of a generic 500.

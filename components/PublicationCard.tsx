@@ -1,3 +1,5 @@
+"use client";
+
 import { Calendar, Users, FileText, ExternalLink, ArrowRight } from 'lucide-react';
 import { Publication } from '@/lib/api';
 import Link from 'next/link';
