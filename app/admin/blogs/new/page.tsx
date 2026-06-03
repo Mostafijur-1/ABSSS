@@ -86,6 +86,7 @@ export default function NewBlogPage() {
         throw new Error('Failed to create blog');
       }
 
+      // Navigate to the admin blog list (not the API JSON endpoint)
       router.push('/admin/blogs');
     } catch (err: any) {
       setError(err.message || 'Failed to create blog');

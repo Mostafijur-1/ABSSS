@@ -2,37 +2,88 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@500;600;700&display=swap');
 
 @layer base {
   html {
     font-family: 'Inter', sans-serif;
+    scroll-behavior: smooth;
   }
   
   body {
-    @apply bg-gray-50 text-gray-900;
+    @apply bg-gradient-to-br from-gray-50 to-gray-100 text-gray-900;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-semibold;
   }
 }
 
 @layer components {
   .btn-primary {
-    @apply bg-primary-600 hover:bg-primary-700 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200;
+    @apply relative bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200 shadow-md hover:shadow-lg inline-flex items-center justify-center gap-2 overflow-hidden;
+  }
+
+  .btn-primary::before {
+    @apply absolute inset-0 bg-white/20 opacity-0 hover:opacity-100 transition-opacity duration-200;
+    content: '';
   }
   
   .btn-secondary {
-    @apply bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium py-2 px-4 rounded-lg transition-colors duration-200;
+    @apply relative bg-secondary-400 border-2 border-secondary-500 text-white hover:bg-secondary-500 font-semibold py-2.5 px-6 rounded-lg transition-all duration-200 shadow-sm hover:shadow-md inline-flex items-center justify-center gap-2;
+  }
+
+  .btn-outline {
+    @apply relative bg-transparent border-2 border-gray-300 text-gray-700 hover:border-primary-600 hover:text-primary-600 font-semibold py-2.5 px-6 rounded-lg transition-all duration-200 inline-flex items-center justify-center gap-2;
   }
   
   .card {
-    @apply bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200;
+    @apply relative bg-white rounded-xl shadow-card hover:shadow-card-hover transition-all duration-300 overflow-hidden;
+  }
+
+  .card::before {
+    @apply absolute inset-0 bg-gradient-to-br from-white/50 to-transparent opacity-0 transition-opacity duration-300 pointer-events-none;
+    content: '';
+  }
+
+  .card:hover::before {
+    @apply opacity-100;
+  }
+
+  .card-border {
+    @apply border border-gray-100;
   }
   
   .section-padding {
-    @apply py-16 px-4 sm:px-6 lg:px-8;
+    @apply py-20 px-4 sm:px-6 lg:px-8;
+  }
+
+  .section-padding-sm {
+    @apply py-12 px-4 sm:px-6 lg:px-8;
   }
   
   .container-max {
     @apply max-w-7xl mx-auto;
+  }
+
+  .gradient-text {
+    @apply bg-gradient-to-r from-primary-600 to-primary-800 bg-clip-text text-transparent;
+  }
+
+  .badge {
+    @apply inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold transition-all duration-200;
+  }
+
+  .badge-primary {
+    @apply bg-primary-100 text-primary-900;
+  }
+
+  .badge-secondary {
+    @apply bg-secondary-100 text-secondary-900;
+  }
+
+  .badge-accent {
+    @apply bg-accent-100 text-accent-900;
   }
 
   .line-clamp-2 {
@@ -48,4 +99,39 @@
     -webkit-box-orient: vertical;
     overflow: hidden;
   }
+
+  .divider {
+    @apply h-1 bg-gradient-to-r from-primary-600 via-primary-400 to-primary-600 rounded-full;
+  }
+
+  .glass-effect {
+    @apply bg-white/20 backdrop-blur-sm border border-white/30;
+  }
+}
+
+@keyframes blob {
+  0%, 100% {
+    transform: translate(0, 0) scale(1);
+  }
+  25% {
+    transform: translate(20px, -50px) scale(1.1);
+  }
+  50% {
+    transform: translate(-20px, 20px) scale(0.9);
+  }
+  75% {
+    transform: translate(50px, 50px) scale(1.05);
+  }
+}
+
+.animate-blob {
+  animation: blob 7s infinite;
+}
+
+.animation-delay-2000 {
+  animation-delay: 2s;
+}
+
+.animation-delay-4000 {
+  animation-delay: 4s;
 } 

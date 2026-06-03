@@ -1,4 +1,4 @@
-import { Calendar, Users, FileText, ExternalLink } from 'lucide-react';
+import { Calendar, Users, FileText, ExternalLink, ArrowRight } from 'lucide-react';
 import { Publication } from '@/lib/api';
 import Link from 'next/link';
 
@@ -26,59 +26,62 @@ const PublicationCard = ({ publication }: PublicationCardProps) => {
   };
 
   return (
-    <div className="card p-6 hover:shadow-lg transition-shadow">
-      <div className="flex items-center justify-between mb-3">
-        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getCategoryColor(publication.category)}`}>
-          <FileText className="w-3 h-3 mr-1" />
+    <div className="card p-6 hover:shadow-lg transition-shadow h-full flex flex-col group">
+      <div className="flex items-center justify-between mb-4 gap-3 flex-wrap">
+        <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-bold badge ${getCategoryColor(publication.category)}`}>
+          <FileText className="w-3 h-3 mr-1.5" />
           {publication.category.replace('-', ' ').charAt(0).toUpperCase() + publication.category.slice(1).replace('-', ' ')}
         </span>
-        <span className="text-xs text-gray-500">
+        <span className="text-xs text-gray-500 font-medium bg-gray-100 px-2.5 py-1 rounded-full">
           {publication.journal}
         </span>
       </div>
 
       <Link href={`/publications/${publication._id}`}>
-        <h3 className="text-xl font-semibold text-gray-900 mb-3 line-clamp-2 hover:text-blue-600 cursor-pointer transition-colors">
+        <h3 className="text-lg font-bold text-gray-900 mb-3 line-clamp-2 hover:text-primary-600 transition-colors cursor-pointer">
           {publication.title}
         </h3>
       </Link>
 
-      <div className="flex items-center text-sm text-gray-500 mb-3">
-        <Users className="w-4 h-4 mr-2" />
-        <span className="line-clamp-1">
+      <div className="flex items-center text-sm text-gray-600 mb-4 gap-2">
+        <Users className="w-4 h-4 text-primary-600 flex-shrink-0" />
+        <span className="line-clamp-1 font-medium">
           {publication.authors.join(', ')}
         </span>
       </div>
 
-      <p className="text-gray-600 mb-4 line-clamp-3">
+      <p className="text-gray-600 mb-5 line-clamp-2 text-sm flex-1 leading-relaxed">
         {publication.abstract}
       </p>
 
-      <div className="flex items-center justify-between">
-        <div className="flex items-center text-sm text-gray-500">
-          <Calendar className="w-4 h-4 mr-2" />
-          {formatDate(publication.publishedDate)}
-        </div>
+      <div className="border-t border-gray-100 pt-4 mt-auto">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center text-sm text-gray-500 font-medium">
+            <Calendar className="w-4 h-4 mr-2 text-primary-600 flex-shrink-0" />
+            {formatDate(publication.publishedDate)}
+          </div>
 
-        <div className="flex items-center gap-3">
-          <Link
-            href={`/publications/${publication._id}`}
-            className="inline-flex items-center text-blue-600 hover:text-blue-700 font-medium text-sm"
-          >
-            Read More
-          </Link>
-          {publication.pdfUrl && (
-            <a
-              href={publication.pdfUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center text-primary-600 hover:text-primary-700 font-medium text-sm"
-              onClick={(e) => e.stopPropagation()}
+          <div className="flex items-center gap-2">
+            <Link
+              href={`/publications/${publication._id}`}
+              className="inline-flex items-center text-primary-600 hover:text-primary-700 font-semibold text-sm transition-colors"
             >
-              <ExternalLink className="w-4 h-4 mr-1" />
-              PDF
-            </a>
-          )}
+              Read
+              <ArrowRight className="w-3.5 h-3.5 ml-1.5" />
+            </Link>
+            {publication.pdfUrl && (
+              <a
+                href={publication.pdfUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center px-2.5 py-1 bg-primary-50 text-primary-600 hover:bg-primary-100 font-semibold text-sm rounded-md transition-colors"
+                onClick={(e) => e.stopPropagation()}
+                title="Download PDF"
+              >
+                <ExternalLink className="w-3.5 h-3.5" />
+              </a>
+            )}
+          </div>
         </div>
       </div>
     </div>

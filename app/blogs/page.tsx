@@ -32,8 +32,13 @@ export default function BlogsPage() {
 
   const fetchBlogs = async () => {
     try {
-      const response = await blogsApi.getPublished();
-      setBlogs(response);
+      const response = await fetch('/api/blogs');
+      if (!response.ok) throw new Error('Failed to fetch blogs');
+      const data = await response.json();
+      const blogsArray = Array.isArray(data) ? data : [];
+      setBlogs(blogsArray);
+      // Ensure UI updates immediately even if filters haven't run yet
+      setFilteredBlogs(blogsArray);
     } catch (error) {
       console.error('Error fetching blogs:', error);
     } finally {
@@ -42,17 +47,18 @@ export default function BlogsPage() {
   };
 
   const filterBlogs = () => {
-    let filtered = blogs;
+    let filtered = Array.isArray(blogs) ? blogs.slice() : [];
 
     if (selectedCategory !== 'all') {
       filtered = filtered.filter(blog => blog.category === selectedCategory);
     }
 
     if (searchQuery) {
+      const q = searchQuery.toLowerCase();
       filtered = filtered.filter(blog =>
-        blog.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        blog.excerpt.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        blog.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()))
+        (blog.title && blog.title.toLowerCase().includes(q)) ||
+        (blog.excerpt && blog.excerpt.toLowerCase().includes(q)) ||
+        (Array.isArray(blog.tags) && blog.tags.some(tag => tag.toLowerCase().includes(q)))
       );
     }
 
@@ -100,13 +106,13 @@ export default function BlogsPage() {
       
       <main className="flex-1">
         {/* Hero Section */}
-        <section className="bg-gradient-to-r from-blue-600 to-blue-800 text-white py-16">
+        <section className="bg-gradient-to-r from-primary-600 to-primary-800 text-white py-16">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center">
               <h1 className="text-4xl md:text-5xl font-bold mb-4">
                 Blog & Articles
               </h1>
-              <p className="text-xl text-blue-100 max-w-3xl mx-auto">
+              <p className="text-xl text-primary-100 max-w-3xl mx-auto">
                 Insights, updates, and knowledge sharing from our community
               </p>
             </div>
@@ -127,7 +133,7 @@ export default function BlogsPage() {
                   placeholder="Search blogs..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                  className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-primary-500 focus:border-primary-500"
                 />
               </div>
 
@@ -139,7 +145,7 @@ export default function BlogsPage() {
                     onClick={() => setSelectedCategory(category.value)}
                     className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
                       selectedCategory === category.value
-                        ? 'bg-blue-600 text-white'
+                        ? 'bg-primary-600 text-white'
                         : 'bg-white text-gray-700 hover:bg-gray-100 border border-gray-300'
                     }`}
                   >
@@ -186,10 +192,10 @@ export default function BlogsPage() {
                     <div className="p-6">
                       <div className="flex items-center space-x-2 mb-3">
                         <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                          blog.category === 'technology' ? 'bg-blue-100 text-blue-800' :
-                          blog.category === 'research' ? 'bg-green-100 text-green-800' :
-                          blog.category === 'events' ? 'bg-purple-100 text-purple-800' :
-                          blog.category === 'news' ? 'bg-red-100 text-red-800' :
+                          blog.category === 'technology' ? 'bg-primary-100 text-primary-900' :
+                          blog.category === 'research' ? 'bg-accent-100 text-accent-900' :
+                          blog.category === 'events' ? 'bg-secondary-100 text-secondary-900' :
+                          blog.category === 'news' ? 'bg-primary-100 text-primary-900' :
                           'bg-gray-100 text-gray-800'
                         }`}>
                           {blog.category}

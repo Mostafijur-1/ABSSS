@@ -65,7 +65,7 @@ export default function BlogDetailPage() {
         <Header />
         <div className="flex-1 flex items-center justify-center">
           <div className="text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto"></div>
             <p className="mt-4 text-gray-600">Loading blog...</p>
           </div>
         </div>
@@ -84,7 +84,7 @@ export default function BlogDetailPage() {
             <p className="text-gray-600 mb-6">{error || 'The blog you are looking for does not exist.'}</p>
             <button
               onClick={() => router.push('/blogs')}
-              className="bg-blue-600 text-white px-6 py-3 rounded-md hover:bg-blue-700 transition-colors"
+              className="bg-primary-600 text-white px-6 py-3 rounded-md hover:bg-primary-700 transition-colors"
             >
               Back to Blogs
             </button>
@@ -105,7 +105,7 @@ export default function BlogDetailPage() {
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
             <button
               onClick={() => router.back()}
-              className="flex items-center text-blue-600 hover:text-blue-700 mb-6 transition-colors"
+              className="flex items-center text-primary-600 hover:text-primary-700 mb-6 transition-colors"
             >
               <ArrowLeft className="h-5 w-5 mr-2" />
               Back
@@ -114,10 +114,10 @@ export default function BlogDetailPage() {
             <div className="mb-6">
               <div className="flex items-center space-x-2 mb-4">
                 <span className={`px-3 py-1 rounded-full text-sm font-medium ${
-                  blog.category === 'technology' ? 'bg-blue-100 text-blue-800' :
-                  blog.category === 'research' ? 'bg-green-100 text-green-800' :
-                  blog.category === 'events' ? 'bg-purple-100 text-purple-800' :
-                  blog.category === 'news' ? 'bg-red-100 text-red-800' :
+                  blog.category === 'technology' ? 'bg-primary-100 text-primary-900' :
+                  blog.category === 'research' ? 'bg-accent-100 text-accent-900' :
+                  blog.category === 'events' ? 'bg-secondary-100 text-secondary-900' :
+                  blog.category === 'news' ? 'bg-primary-100 text-primary-900' :
                   'bg-gray-100 text-gray-800'
                 }`}>
                   {blog.category}
@@ -143,7 +143,7 @@ export default function BlogDetailPage() {
                 </div>
                 <button
                   onClick={handleShare}
-                  className="flex items-center text-blue-600 hover:text-blue-700 transition-colors"
+                  className="flex items-center text-primary-600 hover:text-primary-700 transition-colors"
                 >
                   <Share className="h-5 w-5 mr-2" />
                   Share
@@ -184,10 +184,10 @@ export default function BlogDetailPage() {
         <article className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 mb-12">
           <div className="prose prose-lg max-w-none">
             {blog.excerpt && (
-              <div className="text-xl text-gray-600 font-medium mb-8 p-4 bg-gray-50 rounded-lg border-l-4 border-blue-500">
+              <div className="text-xl text-gray-600 font-medium mb-8 p-4 bg-gray-50 rounded-lg border-l-4 border-primary-500">
                 {blog.excerpt}
               </div>
-            )}
+            )}}
             
             <div 
               className="blog-content"
