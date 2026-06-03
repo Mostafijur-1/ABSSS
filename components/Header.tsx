@@ -22,7 +22,7 @@ const Header = () => {
       <div className="container-max">
         <div className="flex justify-between items-center py-4">
           {/* Logo */}
-          <Link href="/" className="flex items-center space-x-3 group">
+          <Link href="/" className="flex items-center space-x-3 pl-4 md:pl-0 group">
             <div className="bg-gradient-to-br from-primary-600 to-primary-700 p-2 rounded-lg transition-transform group-hover:scale-110">
               <GraduationCap className="h-6 w-6 text-white" />
             </div>
