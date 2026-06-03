@@ -40,46 +40,47 @@ export default function ContactPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-950">
+    <div className="min-h-screen">
       <Header />
       
-      <section className="hero-gradient">
-        <div className="container-max section-padding relative z-10 text-center">
-          <h1 className="mb-6 text-4xl font-semibold tracking-tight text-white sm:text-5xl">
-            Contact Us
-          </h1>
-          <p className="mx-auto max-w-3xl text-base text-primary-100 sm:text-lg">
+      {/* Hero Section */}
+      <section className="bg-gradient-to-br from-primary-600 to-primary-800 text-white">
+        <div className="container-max section-padding text-center">
+          <h1 className="text-5xl font-bold mb-6">Contact Us</h1>
+          <p className="text-xl text-primary-100 max-w-3xl mx-auto">
             Get in touch with us for any questions, collaborations, or to join our scientific society. 
             We'd love to hear from you!
           </p>
         </div>
       </section>
 
-      <section className="section-padding bg-[#03045e]">
+      {/* Contact Form & Info */}
+      <section className="section-padding bg-white">
         <div className="container-max">
-          <div className="grid grid-cols-1 gap-12 lg:grid-cols-2">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+            {/* Contact Form */}
             <div>
-              <h2 className="mb-6 text-3xl font-bold text-[#caf0f8]">Send us a Message</h2>
+              <h2 className="text-3xl font-bold text-gray-900 mb-6">Send us a Message</h2>
               
               {submitStatus === 'success' && (
-                <div className="mb-6 rounded-lg border border-emerald-400/40 bg-emerald-500/15 p-4">
+                <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-6">
                   <div className="flex items-center">
-                    <CheckCircle className="mr-2 h-5 w-5 text-emerald-300" />
-                    <span className="text-sm text-emerald-100">Message sent successfully! We'll get back to you soon.</span>
+                    <CheckCircle className="w-5 h-5 text-green-600 mr-2" />
+                    <span className="text-green-800">Message sent successfully! We'll get back to you soon.</span>
                   </div>
                 </div>
               )}
 
               {submitStatus === 'error' && (
-                <div className="mb-6 rounded-lg border border-rose-400/40 bg-rose-500/10 p-4">
-                  <span className="text-sm text-rose-100">Failed to send message. Please try again.</span>
+                <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
+                  <span className="text-red-800">Failed to send message. Please try again.</span>
                 </div>
               )}
 
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
-                    <label htmlFor="name" className="mb-2 block text-sm font-medium text-[#e0f7ff]">
+                    <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
                       Full Name *
                     </label>
                     <input
@@ -89,13 +90,13 @@ export default function ContactPage() {
                       value={formData.name}
                       onChange={handleChange}
                       required
-                      className="w-full rounded-lg border border-slate-600/70 bg-slate-950/70 px-4 py-2 text-sm text-[#e0f7ff] placeholder:text-slate-400 focus:border-[#00b4d8] focus:outline-none focus:ring-2 focus:ring-[#00b4d8]/70"
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                       placeholder="Your full name"
                     />
                   </div>
 
                   <div>
-                    <label htmlFor="email" className="mb-2 block text-sm font-medium text-[#e0f7ff]">
+                    <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
                       Email Address *
                     </label>
                     <input
@@ -105,14 +106,14 @@ export default function ContactPage() {
                       value={formData.email}
                       onChange={handleChange}
                       required
-                      className="w-full rounded-lg border border-slate-600/70 bg-slate-950/70 px-4 py-2 text-sm text-[#e0f7ff] placeholder:text-slate-400 focus:border-[#00b4d8] focus:outline-none focus:ring-2 focus:ring-[#00b4d8]/70"
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                       placeholder="your.email@example.com"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label htmlFor="subject" className="mb-2 block text-sm font-medium text-[#e0f7ff]">
+                  <label htmlFor="subject" className="block text-sm font-medium text-gray-700 mb-2">
                     Subject
                   </label>
                   <input
@@ -121,13 +122,13 @@ export default function ContactPage() {
                     name="subject"
                     value={formData.subject}
                     onChange={handleChange}
-                    className="w-full rounded-lg border border-slate-600/70 bg-slate-950/70 px-4 py-2 text-sm text-[#e0f7ff] placeholder:text-slate-400 focus:border-[#00b4d8] focus:outline-none focus:ring-2 focus:ring-[#00b4d8]/70"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                     placeholder="What is this about?"
                   />
                 </div>
 
                 <div>
-                  <label htmlFor="message" className="mb-2 block text-sm font-medium text-[#e0f7ff]">
+                  <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-2">
                     Message *
                   </label>
                   <textarea
@@ -137,7 +138,7 @@ export default function ContactPage() {
                     onChange={handleChange}
                     required
                     rows={6}
-                    className="w-full rounded-lg border border-slate-600/70 bg-slate-950/70 px-4 py-2 text-sm text-[#e0f7ff] placeholder:text-slate-400 focus:border-[#00b4d8] focus:outline-none focus:ring-2 focus:ring-[#00b4d8]/70"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                     placeholder="Tell us more about your inquiry..."
                   />
                 </div>
@@ -162,17 +163,18 @@ export default function ContactPage() {
               </form>
             </div>
 
+            {/* Contact Information */}
             <div>
-              <h2 className="mb-6 text-3xl font-bold text-[#caf0f8]">Get in Touch</h2>
+              <h2 className="text-3xl font-bold text-gray-900 mb-6">Get in Touch</h2>
               
               <div className="space-y-8">
                 <div className="flex items-start">
-                  <div className="mr-4 flex h-12 w-12 items-center justify-center rounded-full bg-[#0077b6]/25">
-                    <MapPin className="h-6 w-6 text-[#caf0f8]" />
+                  <div className="bg-primary-100 w-12 h-12 rounded-full flex items-center justify-center mr-4">
+                    <MapPin className="w-6 h-6 text-primary-600" />
                   </div>
                   <div>
-                    <h3 className="mb-2 text-lg font-semibold text-[#f9fbff]">Visit Us</h3>
-                    <p className="text-sm text-[#90e0ef]">
+                    <h3 className="text-lg font-semibold text-gray-900 mb-2">Visit Us</h3>
+                    <p className="text-gray-600">
                       University Campus<br />
                       Science Building, Room 205<br />
                       City, State 12345
@@ -181,18 +183,18 @@ export default function ContactPage() {
                 </div>
 
                 <div className="flex items-start">
-                  <div className="mr-4 flex h-12 w-12 items-center justify-center rounded-full bg-[#00b4d8]/25">
-                    <Mail className="h-6 w-6 text-[#caf0f8]" />
+                  <div className="bg-primary-100 w-12 h-12 rounded-full flex items-center justify-center mr-4">
+                    <Mail className="w-6 h-6 text-primary-600" />
                   </div>
                   <div>
-                    <h3 className="mb-2 text-lg font-semibold text-[#f9fbff]">Email Us</h3>
-                    <p className="text-sm text-[#90e0ef]">
-                      <a href="mailto:info@absss.edu" className="text-[#ade8f4] hover:text-[#fdfdfd]">
+                    <h3 className="text-lg font-semibold text-gray-900 mb-2">Email Us</h3>
+                    <p className="text-gray-600">
+                      <a href="mailto:info@absss.edu" className="text-primary-600 hover:text-primary-700">
                         info@absss.edu
                       </a>
                     </p>
-                    <p className="text-sm text-[#90e0ef]">
-                      <a href="mailto:president@absss.edu" className="text-[#ade8f4] hover:text-[#fdfdfd]">
+                    <p className="text-gray-600">
+                      <a href="mailto:president@absss.edu" className="text-primary-600 hover:text-primary-700">
                         president@absss.edu
                       </a>
                     </p>
@@ -200,13 +202,13 @@ export default function ContactPage() {
                 </div>
 
                 <div className="flex items-start">
-                  <div className="mr-4 flex h-12 w-12 items-center justify-center rounded-full bg-[#48cae4]/25">
-                    <Phone className="h-6 w-6 text-[#caf0f8]" />
+                  <div className="bg-primary-100 w-12 h-12 rounded-full flex items-center justify-center mr-4">
+                    <Phone className="w-6 h-6 text-primary-600" />
                   </div>
                   <div>
-                    <h3 className="mb-2 text-lg font-semibold text-[#f9fbff]">Call Us</h3>
-                    <p className="text-sm text-[#90e0ef]">
-                      <a href="tel:+1234567890" className="text-[#ade8f4] hover:text-[#fdfdfd]">
+                    <h3 className="text-lg font-semibold text-gray-900 mb-2">Call Us</h3>
+                    <p className="text-gray-600">
+                      <a href="tel:+1234567890" className="text-primary-600 hover:text-primary-700">
                         +1 (234) 567-890
                       </a>
                     </p>
@@ -214,9 +216,10 @@ export default function ContactPage() {
                 </div>
               </div>
 
-              <div className="mt-8 rounded-lg border border-white/10 bg-[#020b2a]/80 p-6">
-                <h3 className="mb-4 text-lg font-semibold text-[#caf0f8]">Office Hours</h3>
-                <div className="space-y-2 text-sm text-[#90e0ef]">
+              {/* Office Hours */}
+              <div className="mt-8 p-6 bg-gray-50 rounded-lg">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">Office Hours</h3>
+                <div className="space-y-2 text-gray-600">
                   <div className="flex justify-between">
                     <span>Monday - Friday</span>
                     <span>9:00 AM - 5:00 PM</span>
@@ -236,43 +239,44 @@ export default function ContactPage() {
         </div>
       </section>
 
-      <section className="section-padding bg-[#023e8a]">
+      {/* FAQ Section */}
+      <section className="section-padding bg-gray-50">
         <div className="container-max">
-          <div className="mb-12 text-center">
-            <h2 className="mb-4 text-3xl font-bold text-[#caf0f8]">Frequently Asked Questions</h2>
-            <p className="mx-auto max-w-3xl text-xl text-[#90e0ef]">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">Frequently Asked Questions</h2>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
               Find answers to common questions about joining ABSSS and our activities
             </p>
           </div>
 
-          <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
-            <div className="card bg-gradient-to-b from-[#023e8a] to-[#03045e] p-6">
-              <h3 className="mb-2 text-lg font-semibold text-[#f9fbff]">How can I join ABSSS?</h3>
-              <p className="text-sm text-[#90e0ef]">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div className="card p-6">
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">How can I join ABSSS?</h3>
+              <p className="text-gray-600">
                 Students can apply for membership by filling out our application form and attending an orientation session. 
                 Faculty members can contact us directly for collaboration opportunities.
               </p>
             </div>
 
-            <div className="card bg-gradient-to-b from-[#023e8a] to-[#03045e] p-6">
-              <h3 className="mb-2 text-lg font-semibold text-[#f9fbff]">What events do you organize?</h3>
-              <p className="text-sm text-[#90e0ef]">
+            <div className="card p-6">
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">What events do you organize?</h3>
+              <p className="text-gray-600">
                 We host conferences, workshops, seminars, lectures, and science competitions throughout the year. 
                 Check our events page for upcoming activities.
               </p>
             </div>
 
-            <div className="card bg-gradient-to-b from-[#023e8a] to-[#03045e] p-6">
-              <h3 className="mb-2 text-lg font-semibold text-[#f9fbff]">Can I publish my research with you?</h3>
-              <p className="text-sm text-[#90e0ef]">
+            <div className="card p-6">
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">Can I publish my research with you?</h3>
+              <p className="text-gray-600">
                 Yes! We welcome research submissions from students and faculty. Our publications include research papers, 
                 review articles, case studies, and blog posts.
               </p>
             </div>
 
-            <div className="card bg-gradient-to-b from-[#023e8a] to-[#03045e] p-6">
-              <h3 className="mb-2 text-lg font-semibold text-[#f9fbff]">Do you offer research funding?</h3>
-              <p className="text-sm text-[#90e0ef]">
+            <div className="card p-6">
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">Do you offer research funding?</h3>
+              <p className="text-gray-600">
                 We provide limited funding for student research projects and conference attendance. 
                 Contact us for more information about funding opportunities.
               </p>
