@@ -30,39 +30,39 @@ export default function MembersPage() {
   const alumniMembers = allMembers.filter(member => member.role === 'alumni');
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-gray-950">
       <Header />
-      {/* Hero Section */}
-      <section className="bg-gradient-to-br from-primary-600 to-primary-800 text-white">
-        <div className="container-max section-padding text-center">
-          <h1 className="text-5xl font-bold mb-6">Our Members</h1>
-          <p className="text-xl text-primary-100 max-w-3xl mx-auto">
+      <section className="hero-gradient">
+        <div className="container-max section-padding relative z-10 text-center">
+          <h1 className="mb-6 text-4xl font-semibold tracking-tight text-white sm:text-5xl">
+            Our Members
+          </h1>
+          <p className="mx-auto max-w-3xl text-base text-primary-100 sm:text-lg">
             Meet our diverse community of faculty advisors, researchers, students, and alumni 
             who contribute to advancing scientific knowledge and innovation.
           </p>
         </div>
       </section>
 
-      {/* Faculty Members */}
-      <section className="section-padding bg-white">
+      <section className="section-padding bg-gray-950">
         <div className="container-max">
-          <div className="flex items-center mb-8">
-            <Users className="w-8 h-8 text-primary-600 mr-3" />
-            <h2 className="text-3xl font-bold text-gray-900">Faculty Advisors</h2>
+          <div className="mb-8 flex items-center">
+            <Users className="mr-3 h-8 w-8 text-sky-400" />
+            <h2 className="text-3xl font-semibold text-white">Faculty Advisors</h2>
           </div>
           {loading ? (
-            <div className="text-center py-12">Loading members...</div>
+            <div className="py-12 text-center text-gray-300">Loading members...</div>
           ) : facultyMembers.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
               {facultyMembers.map((member) => (
                 <MemberCard key={member._id} member={member} />
               ))}
             </div>
           ) : (
-            <div className="text-center py-12">
-              <Users className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">No Faculty Members</h3>
-              <p className="text-gray-600">
+            <div className="py-12 text-center text-gray-200">
+              <Users className="mx-auto mb-4 h-16 w-16 text-gray-500" />
+              <h3 className="mb-2 text-xl font-semibold text-white">No Faculty Members</h3>
+              <p className="text-gray-300">
                 Faculty member profiles will appear here.
               </p>
             </div>
@@ -70,26 +70,25 @@ export default function MembersPage() {
         </div>
       </section>
 
-      {/* Student Members */}
-      <section className="section-padding bg-gray-50">
+      <section className="section-padding bg-slate-950">
         <div className="container-max">
-          <div className="flex items-center mb-8">
-            <Filter className="w-8 h-8 text-primary-600 mr-3" />
-            <h2 className="text-3xl font-bold text-gray-900">Student Members</h2>
+          <div className="mb-8 flex items-center">
+            <Filter className="mr-3 h-8 w-8 text-sky-400" />
+            <h2 className="text-3xl font-semibold text-white">Student Members</h2>
           </div>
           {loading ? (
-            <div className="text-center py-12">Loading members...</div>
+            <div className="py-12 text-center text-gray-300">Loading members...</div>
           ) : studentMembers.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
               {studentMembers.map((member) => (
                 <MemberCard key={member._id} member={member} />
               ))}
             </div>
           ) : (
-            <div className="text-center py-12">
-              <Filter className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">No Student Members</h3>
-              <p className="text-gray-600">
+            <div className="py-12 text-center text-gray-200">
+              <Filter className="mx-auto mb-4 h-16 w-16 text-gray-500" />
+              <h3 className="mb-2 text-xl font-semibold text-white">No Student Members</h3>
+              <p className="text-gray-300">
                 Student member profiles will appear here.
               </p>
             </div>
@@ -97,15 +96,14 @@ export default function MembersPage() {
         </div>
       </section>
 
-      {/* Alumni Members */}
       {alumniMembers.length > 0 && (
-        <section className="section-padding bg-white">
+        <section className="section-padding bg-gray-950">
           <div className="container-max">
-            <div className="flex items-center mb-8">
-              <Users className="w-8 h-8 text-primary-600 mr-3" />
-              <h2 className="text-3xl font-bold text-gray-900">Alumni Members</h2>
+            <div className="mb-8 flex items-center">
+              <Users className="mr-3 h-8 w-8 text-sky-400" />
+              <h2 className="text-3xl font-semibold text-white">Alumni Members</h2>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
               {alumniMembers.map((member) => (
                 <MemberCard key={member._id} member={member} />
               ))}
@@ -114,84 +112,82 @@ export default function MembersPage() {
         </section>
       )}
 
-      {/* Membership Stats */}
-      <section className="section-padding bg-gray-50">
+      <section className="section-padding bg-slate-950">
         <div className="container-max">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">Membership Statistics</h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+          <div className="mb-12 text-center">
+            <h2 className="mb-4 text-3xl font-semibold text-white">Membership Statistics</h2>
+            <p className="mx-auto max-w-3xl text-base text-gray-300">
               Our growing community of scientists and researchers
             </p>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-            <div className="card p-6 text-center">
-              <div className="text-3xl font-bold text-primary-600 mb-2">
+          <div className="grid grid-cols-1 gap-8 md:grid-cols-4">
+            <div className="card border-white/10 bg-slate-950/60 p-6 text-center text-slate-50">
+              <div className="mb-2 text-3xl font-bold text-sky-300">
                 {allMembers.length}
               </div>
-              <div className="text-gray-600">Total Members</div>
+              <div className="text-gray-300">Total Members</div>
             </div>
-            <div className="card p-6 text-center">
-              <div className="text-3xl font-bold text-primary-600 mb-2">
+            <div className="card border-white/10 bg-slate-950/60 p-6 text-center text-slate-50">
+              <div className="mb-2 text-3xl font-bold text-sky-300">
                 {facultyMembers.length}
               </div>
-              <div className="text-gray-600">Faculty Advisors</div>
+              <div className="text-gray-300">Faculty Advisors</div>
             </div>
-            <div className="card p-6 text-center">
-              <div className="text-3xl font-bold text-primary-600 mb-2">
+            <div className="card border-white/10 bg-slate-950/60 p-6 text-center text-slate-50">
+              <div className="mb-2 text-3xl font-bold text-sky-300">
                 {studentMembers.length}
               </div>
-              <div className="text-gray-600">Student Members</div>
+              <div className="text-gray-300">Student Members</div>
             </div>
-            <div className="card p-6 text-center">
-              <div className="text-3xl font-bold text-primary-600 mb-2">
+            <div className="card border-white/10 bg-slate-950/60 p-6 text-center text-slate-50">
+              <div className="mb-2 text-3xl font-bold text-sky-300">
                 {alumniMembers.length}
               </div>
-              <div className="text-gray-600">Alumni Members</div>
+              <div className="text-gray-300">Alumni Members</div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Join Us */}
-      <section className="section-padding bg-white">
+      <section className="section-padding bg-gray-950">
         <div className="container-max">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">Join Our Community</h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+          <div className="mb-12 text-center">
+            <h2 className="mb-4 text-3xl font-semibold text-white">Join Our Community</h2>
+            <p className="mx-auto max-w-3xl text-base text-gray-300">
               Become part of our scientific society and contribute to advancing research and innovation
             </p>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="card p-6 text-center">
-              <div className="bg-primary-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-2xl">🎓</span>
+          <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
+            <div className="card border-white/10 bg-slate-950/60 p-6 text-center text-slate-50">
+              <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-sky-500/15 text-2xl">
+                <span>🎓</span>
               </div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">For Students</h3>
-              <p className="text-gray-600 text-sm mb-4">
+              <h3 className="mb-2 text-lg font-semibold text-white">For Students</h3>
+              <p className="mb-4 text-sm text-gray-300">
                 Join as a student member to participate in research projects, attend events, and network with peers.
               </p>
               <a href="/contact" className="btn-primary text-sm">
                 Apply Now
               </a>
             </div>
-            <div className="card p-6 text-center">
-              <div className="bg-primary-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-2xl">👨‍🏫</span>
+            <div className="card border-white/10 bg-slate-950/60 p-6 text-center text-slate-50">
+              <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-sky-500/15 text-2xl">
+                <span>👨‍🏫</span>
               </div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">For Faculty</h3>
-              <p className="text-gray-600 text-sm mb-4">
+              <h3 className="mb-2 text-lg font-semibold text-white">For Faculty</h3>
+              <p className="mb-4 text-sm text-gray-300">
                 Become a faculty advisor to mentor students and contribute to our research initiatives.
               </p>
               <a href="/contact" className="btn-primary text-sm">
                 Contact Us
               </a>
             </div>
-            <div className="card p-6 text-center">
-              <div className="bg-primary-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-2xl">🤝</span>
+            <div className="card border-white/10 bg-slate-950/60 p-6 text-center text-slate-50">
+              <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-sky-500/15 text-2xl">
+                <span>🤝</span>
               </div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">Collaborations</h3>
-              <p className="text-gray-600 text-sm mb-4">
+              <h3 className="mb-2 text-lg font-semibold text-white">Collaborations</h3>
+              <p className="mb-4 text-sm text-gray-300">
                 Partner with us on research projects, events, or publications.
               </p>
               <a href="/contact" className="btn-primary text-sm">

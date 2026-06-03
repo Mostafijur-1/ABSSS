@@ -1,7 +1,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import Link from 'next/link';
+import { usePathname, useRouter } from 'next/navigation';
 import { User, authStorage, hasPermission } from '@/lib/clientAuth';
 import { 
   Menu, 
@@ -27,6 +28,7 @@ export default function AdminLayout({ children, title = 'Admin Dashboard' }: Adm
   const [user, setUser] = useState<User | null>(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [loading, setLoading] = useState(true);
+  const pathname = usePathname();
   const router = useRouter();
 
   useEffect(() => {
@@ -61,58 +63,70 @@ export default function AdminLayout({ children, title = 'Admin Dashboard' }: Adm
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600"></div>
+      <div className="flex min-h-screen items-center justify-center bg-gray-50">
+        <div className="h-12 w-12 animate-spin rounded-full border-2 border-gray-200 border-b-primary-600" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex">
-      {/* Sidebar */}
-      <div className={`fixed inset-y-0 left-0 z-50 w-64 bg-white shadow-lg transform transition-transform duration-300 ease-in-out ${
+    <div className="flex min-h-screen bg-gray-50">
+      <div
+        className={`fixed inset-y-0 left-0 z-50 w-64 transform bg-white/80 shadow-lg backdrop-blur-md transition-transform duration-300 ease-in-out ${
         sidebarOpen ? 'translate-x-0' : '-translate-x-full'
-      } lg:translate-x-0 lg:static lg:inset-0 lg:flex-shrink-0`}>
-        <div className="flex items-center justify-between h-16 px-6 border-b border-gray-200">
+      } lg:static lg:inset-0 lg:flex-shrink-0 lg:translate-x-0`}
+      >
+        <div className="flex h-16 items-center justify-between border-b border-gray-200/80 px-6">
           <div className="flex items-center">
-            <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-sm">A</span>
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary-600 text-xs font-semibold text-white shadow-sm">
+              AB
             </div>
-            <span className="ml-3 text-lg font-semibold text-gray-900">ABSSS Admin</span>
+            <span className="ml-3 text-sm font-semibold text-gray-900">
+              ABSSS Admin
+            </span>
           </div>
           <button
             onClick={() => setSidebarOpen(false)}
-            className="lg:hidden p-2 rounded-md text-gray-400 hover:text-gray-600 hover:bg-gray-100"
+            className="rounded-md p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-600 lg:hidden"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
-        <nav className="mt-6 px-3">
+        <nav className="mt-4 px-3">
           <div className="space-y-1">
             {navigation.map((item) => {
               const Icon = item.icon;
+              const active = pathname === item.href || pathname.startsWith(item.href);
               return (
-                <a
+                <Link
                   key={item.name}
                   href={item.href}
-                  className="group flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-700 hover:text-blue-600 hover:bg-blue-50 transition-colors"
+                  className={`group flex items-center rounded-md px-3 py-2 text-sm font-medium transition-colors ${
+                    active
+                      ? 'bg-primary-50 text-primary-700'
+                      : 'text-gray-700 hover:bg-gray-50 hover:text-primary-700'
+                  }`}
                 >
-                  <Icon className="mr-3 h-5 w-5 text-gray-400 group-hover:text-blue-600" />
+                  <Icon
+                    className={`mr-3 h-5 w-5 ${
+                      active
+                        ? 'text-primary-600'
+                        : 'text-gray-400 group-hover:text-primary-600'
+                    }`}
+                  />
                   {item.name}
-                </a>
+                </Link>
               );
             })}
           </div>
         </nav>
 
-        <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-gray-200">
+        <div className="absolute bottom-0 left-0 right-0 border-t border-gray-200/80 p-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center">
-              <div className="w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center">
-                <span className="text-gray-600 font-medium text-sm">
+              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gray-100 text-xs font-medium text-gray-600">
                   {user?.username?.charAt(0)?.toUpperCase()}
-                </span>
               </div>
               <div className="ml-3">
                 <p className="text-sm font-medium text-gray-900">
@@ -123,7 +137,7 @@ export default function AdminLayout({ children, title = 'Admin Dashboard' }: Adm
             </div>
             <button
               onClick={handleLogout}
-              className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-md"
+              className="rounded-md p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-600"
               title="Logout"
             >
               <LogOut className="w-4 h-4" />
@@ -132,39 +146,39 @@ export default function AdminLayout({ children, title = 'Admin Dashboard' }: Adm
         </div>
       </div>
 
-      {/* Main content */}
-      <div className="flex-1 flex flex-col min-w-0">
-        {/* Top bar */}
-        <div className="sticky top-0 z-40 bg-white shadow-sm border-b border-gray-200">
-          <div className="flex items-center justify-between h-16 px-4 sm:px-6 lg:px-8">
+      <div className="flex min-w-0 flex-1 flex-col">
+        <div className="sticky top-0 z-40 border-b border-gray-200 bg-white/80 backdrop-blur-md">
+          <div className="flex h-16 items-center justify-between px-4 sm:px-6 lg:px-8">
             <div className="flex items-center">
               <button
                 onClick={() => setSidebarOpen(true)}
-                className="lg:hidden p-2 rounded-md text-gray-400 hover:text-gray-600 hover:bg-gray-100"
+                className="rounded-md p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-600 lg:hidden"
               >
                 <Menu className="w-5 h-5" />
               </button>
-              <h1 className="ml-4 lg:ml-0 text-xl font-semibold text-gray-900">{title}</h1>
+              <h1 className="ml-4 text-base font-semibold text-gray-900 lg:ml-0 lg:text-lg">
+                {title}
+              </h1>
             </div>
             <div className="flex items-center space-x-4">
-              <div className="hidden sm:flex items-center space-x-2 text-sm text-gray-500">
+              <div className="hidden items-center space-x-2 text-xs text-gray-500 sm:flex">
                 <span>Welcome back,</span>
-                <span className="font-medium text-gray-900">{user?.username}</span>
+                <span className="font-medium text-gray-900">
+                  {user?.username}
+                </span>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Page content */}
-        <main className="flex-1 p-4 sm:p-6 lg:p-8 overflow-auto">
+        <main className="flex-1 overflow-auto bg-gray-50 p-4 sm:p-6 lg:p-8">
           {children}
         </main>
       </div>
 
-      {/* Mobile overlay */}
       {sidebarOpen && (
         <div
-          className="fixed inset-0 z-40 bg-gray-600 bg-opacity-75 lg:hidden"
+          className="fixed inset-0 z-40 bg-gray-900/40 lg:hidden"
           onClick={() => setSidebarOpen(false)}
         />
       )}
