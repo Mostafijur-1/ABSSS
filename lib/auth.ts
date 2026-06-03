@@ -49,4 +49,19 @@ export function requireRole(request: NextRequest, roles: string[]): JWTPayload {
     throw new Error('Insufficient permissions');
   }
   return payload;
-} 
+}
+
+export function requirePermission(request: NextRequest, permission: string): JWTPayload {
+  const payload = requireAuth(request);
+  const permissions = payload.permissions || [];
+
+  if (payload.role !== 'admin' && !permissions.includes('all') && !permissions.includes(permission)) {
+    throw new Error('Insufficient permissions');
+  }
+
+  return payload;
+}
+
+export function getAuthErrorStatus(error: unknown): 401 | 403 {
+  return error instanceof Error && error.message === 'Insufficient permissions' ? 403 : 401;
+}

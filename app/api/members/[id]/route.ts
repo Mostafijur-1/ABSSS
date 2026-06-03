@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { connectDB } from '@/lib/database';
 import Member from '@/lib/models/Member';
+import { getAuthErrorStatus, requirePermission } from '@/lib/auth';
 
 export async function GET(
   request: NextRequest,
@@ -32,6 +33,7 @@ export async function PUT(
   { params }: { params: { id: string } }
 ) {
   try {
+    requirePermission(request, 'members');
     await connectDB();
     const body = await request.json();
     
@@ -51,6 +53,9 @@ export async function PUT(
     return NextResponse.json(updatedMember);
   } catch (error) {
     console.error('Error updating member:', error);
+    if (error instanceof Error && ['Authentication required', 'Insufficient permissions'].includes(error.message)) {
+      return NextResponse.json({ message: error.message }, { status: getAuthErrorStatus(error) });
+    }
     return NextResponse.json(
       { message: 'Failed to update member' },
       { status: 500 }
@@ -63,6 +68,7 @@ export async function DELETE(
   { params }: { params: { id: string } }
 ) {
   try {
+    requirePermission(request, 'members');
     await connectDB();
     const deletedMember = await Member.findByIdAndDelete(params.id);
     
@@ -76,6 +82,9 @@ export async function DELETE(
     return NextResponse.json({ message: 'Member deleted successfully' });
   } catch (error) {
     console.error('Error deleting member:', error);
+    if (error instanceof Error && ['Authentication required', 'Insufficient permissions'].includes(error.message)) {
+      return NextResponse.json({ message: error.message }, { status: getAuthErrorStatus(error) });
+    }
     return NextResponse.json(
       { message: 'Failed to delete member' },
       { status: 500 }

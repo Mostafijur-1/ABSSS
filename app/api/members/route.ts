@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { connectDB } from '@/lib/database';
 import Member from '@/lib/models/Member';
+import { getAuthErrorStatus, requirePermission } from '@/lib/auth';
 
 export async function GET(request: NextRequest) {
   try {
@@ -30,6 +31,7 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
+    requirePermission(request, 'members');
     await connectDB();
     const body = await request.json();
     
@@ -39,6 +41,9 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(savedMember, { status: 201 });
   } catch (error) {
     console.error('Error creating member:', error);
+    if (error instanceof Error && ['Authentication required', 'Insufficient permissions'].includes(error.message)) {
+      return NextResponse.json({ message: error.message }, { status: getAuthErrorStatus(error) });
+    }
     return NextResponse.json(
       { message: 'Failed to create member' },
       { status: 500 }

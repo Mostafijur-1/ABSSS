@@ -1,10 +1,33 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { connectDB } from '@/lib/database';
 import Blog from '@/lib/models/Blog';
+import { getAuthErrorStatus, requirePermission } from '@/lib/auth';
 
 export async function GET(request: NextRequest) {
   try {
-    await connectDB();
+    console.log('GET /api/blogs called - headers:', {
+      referer: request.headers.get('referer'),
+      origin: request.headers.get('origin'),
+      ua: request.headers.get('user-agent')
+    });
+    const urlObj = new URL(request.url);
+    console.log('GET /api/blogs searchParams:', urlObj.searchParams.toString());
+    const mongooseConn = await connectDB();
+    try {
+      const db = mongooseConn?.connection?.db;
+      if (db) {
+        const collections = await db.listCollections().toArray();
+        console.log('Connected DB name:', mongooseConn.connection.name, 'collections:', collections.map(c => c.name));
+      } else {
+        console.warn('No db object on mongoose connection; cannot list collections.');
+      }
+    } catch (e) {
+      if (e instanceof Error) {
+        console.warn('Could not list collections:', e.message);
+      } else {
+        console.warn('Could not list collections:', String(e));
+      }
+    }
     const { searchParams } = new URL(request.url);
     const published = searchParams.get('published');
     const category = searchParams.get('category');
@@ -24,6 +47,11 @@ export async function GET(request: NextRequest) {
       .sort(sortOptions)
       .limit(limit || 0);
 
+    console.log('GET /api/blogs query:', query, 'count:', Array.isArray(blogs) ? blogs.length : 0);
+    if (Array.isArray(blogs) && blogs.length > 0) {
+      console.log('GET /api/blogs sample:', blogs.slice(0, 2).map(b => ({ _id: b._id, title: b.title, isPublished: b.isPublished })));
+    }
+
     return NextResponse.json(blogs);
   } catch (error) {
     console.error('Error fetching blogs:', error);
@@ -36,6 +64,7 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
+    requirePermission(request, 'publications');
     await connectDB();
 
     // Guard against multipart/form-data requests (FormData). The route
@@ -58,6 +87,9 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(savedBlog, { status: 201 });
   } catch (error) {
     console.error('Error creating blog:', error);
+    if (error instanceof Error && ['Authentication required', 'Insufficient permissions'].includes(error.message)) {
+      return NextResponse.json({ message: error.message }, { status: getAuthErrorStatus(error) });
+    }
 
     // If Mongoose validation failed, return details to the client to
     // help diagnose missing/invalid fields instead of a generic 500.
