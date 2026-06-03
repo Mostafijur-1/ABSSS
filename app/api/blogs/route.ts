@@ -14,10 +14,19 @@ export async function GET(request: NextRequest) {
     console.log('GET /api/blogs searchParams:', urlObj.searchParams.toString());
     const mongooseConn = await connectDB();
     try {
-      const collections = await mongooseConn.connection.db.listCollections().toArray();
-      console.log('Connected DB name:', mongooseConn.connection.name, 'collections:', collections.map(c => c.name));
+      const db = mongooseConn?.connection?.db;
+      if (db) {
+        const collections = await db.listCollections().toArray();
+        console.log('Connected DB name:', mongooseConn.connection.name, 'collections:', collections.map(c => c.name));
+      } else {
+        console.warn('No db object on mongoose connection; cannot list collections.');
+      }
     } catch (e) {
-      console.warn('Could not list collections:', e?.message || e);
+      if (e instanceof Error) {
+        console.warn('Could not list collections:', e.message);
+      } else {
+        console.warn('Could not list collections:', String(e));
+      }
     }
     const { searchParams } = new URL(request.url);
     const published = searchParams.get('published');
