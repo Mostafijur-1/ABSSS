@@ -187,7 +187,7 @@ export default function BlogDetailPage() {
               <div className="text-xl text-gray-600 font-medium mb-8 p-4 bg-gray-50 rounded-lg border-l-4 border-primary-500">
                 {blog.excerpt}
               </div>
-            )}
+            )}}
             
             <div 
               className="blog-content"
