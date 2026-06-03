@@ -72,23 +72,58 @@ export interface User {
   role: 'admin' | 'moderator' | 'editor';
   permissions: string[];
   isActive: boolean;
-  lastLogin: string;
+  lastLogin?: string | null;
   createdAt: string;
   updatedAt: string;
+}
+
+type UserInput = {
+  username: string;
+  email: string;
+  password?: string;
+  role: 'admin' | 'moderator' | 'editor';
+  permissions: string[];
+  isActive: boolean;
+};
+
+function getAuthHeaders(): Record<string, string> {
+  if (typeof window === 'undefined') return {};
+
+  const token = localStorage.getItem('absss_token');
+  return token ? { Authorization: `Bearer ${token}` } : {};
+}
+
+async function parseApiError(response: Response): Promise<Error> {
+  let message = `API call failed: ${response.statusText || response.status}`;
+
+  try {
+    const errorBody = await response.json();
+    message = errorBody.message || message;
+  } catch {
+    // Keep the status-based message when the response body is not JSON.
+  }
+
+  if (response.status === 401 && typeof window !== 'undefined') {
+    localStorage.removeItem('absss_token');
+    localStorage.removeItem('absss_user');
+  }
+
+  return new Error(message);
 }
 
 // Generic API function
 async function apiCall<T>(endpoint: string, options?: RequestInit): Promise<T> {
   const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+    ...options,
     headers: {
       'Content-Type': 'application/json',
+      ...getAuthHeaders(),
       ...options?.headers,
     },
-    ...options,
   });
 
   if (!response.ok) {
-    throw new Error(`API call failed: ${response.statusText}`);
+    throw await parseApiError(response);
   }
 
   return response.json();
@@ -98,12 +133,15 @@ async function apiCall<T>(endpoint: string, options?: RequestInit): Promise<T> {
 async function apiCallFormData<T>(endpoint: string, formData: FormData, method: 'POST' | 'PUT' = 'POST'): Promise<T> {
   const response = await fetch(`${API_BASE_URL}${endpoint}`, {
     method,
+    headers: {
+      ...getAuthHeaders(),
+    },
     body: formData,
     // Don't set Content-Type for FormData - browser will set it with boundary
   });
 
   if (!response.ok) {
-    throw new Error(`API call failed: ${response.statusText}`);
+    throw await parseApiError(response);
   }
 
   return response.json();
@@ -112,8 +150,8 @@ async function apiCallFormData<T>(endpoint: string, formData: FormData, method: 
 // Events API
 export const eventsApi = {
   getAll: () => apiCall<Event[]>('/events'),
-  getUpcoming: () => apiCall<Event[]>('/events/upcoming'),
-  getPast: () => apiCall<Event[]>('/events/past'),
+  getUpcoming: () => apiCall<Event[]>('/events?upcoming=true'),
+  getPast: () => apiCall<Event[]>('/events?past=true'),
   getById: (id: string) => apiCall<Event>(`/events/${id}`),
   create: (event: Omit<Event, '_id' | 'createdAt' | 'updatedAt'>) => 
     apiCall<Event>('/events', { method: 'POST', body: JSON.stringify(event) }),
@@ -129,7 +167,7 @@ export const eventsApi = {
 // Publications API
 export const publicationsApi = {
   getAll: () => apiCall<Publication[]>('/publications'),
-  getRecent: () => apiCall<Publication[]>('/publications/recent'),
+  getRecent: () => apiCall<Publication[]>('/publications?recent=true'),
   getById: (id: string) => apiCall<Publication>(`/publications/${id}`),
   create: (publication: Omit<Publication, '_id' | 'createdAt' | 'updatedAt'>) => 
     apiCall<Publication>('/publications', { method: 'POST', body: JSON.stringify(publication) }),
@@ -164,8 +202,8 @@ export const blogsApi = {
 // Members API
 export const membersApi = {
   getAll: () => apiCall<Member[]>('/members'),
-  getFaculty: () => apiCall<Member[]>('/members/faculty'),
-  getStudents: () => apiCall<Member[]>('/members/students'),
+  getFaculty: () => apiCall<Member[]>('/members?role=faculty&active=true'),
+  getStudents: () => apiCall<Member[]>('/members?role=student&active=true'),
   getById: (id: string) => apiCall<Member>(`/members/${id}`),
   create: (member: Omit<Member, '_id' | 'createdAt' | 'updatedAt'>) => 
     apiCall<Member>('/members', { method: 'POST', body: JSON.stringify(member) }),
@@ -182,13 +220,14 @@ export const membersApi = {
 export const contactApi = {
   submit: (contact: ContactForm) => 
     apiCall<{ message: string; contact: any }>('/contact', { method: 'POST', body: JSON.stringify(contact) }),
+  getAll: () => apiCall<any[]>('/contact'),
 };
 
 // Users API
 export const usersApi = {
   getAll: () => apiCall<User[]>('/users'),
   getById: (id: string) => apiCall<User>(`/users/${id}`),
-  create: (user: Omit<User, '_id' | 'createdAt' | 'updatedAt' | 'lastLogin'>) => 
+  create: (user: UserInput) => 
     apiCall<User>('/users', { method: 'POST', body: JSON.stringify(user) }),
   update: (id: string, user: Partial<User>) => 
     apiCall<User>(`/users/${id}`, { method: 'PUT', body: JSON.stringify(user) }),

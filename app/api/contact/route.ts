@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { connectDB } from '@/lib/database';
 import Contact from '@/lib/models/Contact';
+import { getAuthErrorStatus, requirePermission } from '@/lib/auth';
 
 export async function POST(request: NextRequest) {
   try {
@@ -28,6 +29,7 @@ export async function POST(request: NextRequest) {
 
 export async function GET(request: NextRequest) {
   try {
+    requirePermission(request, 'contacts');
     await connectDB();
     const { searchParams } = new URL(request.url);
     const unread = searchParams.get('unread');
@@ -41,6 +43,9 @@ export async function GET(request: NextRequest) {
     return NextResponse.json(contacts);
   } catch (error) {
     console.error('Error fetching contacts:', error);
+    if (error instanceof Error && ['Authentication required', 'Insufficient permissions'].includes(error.message)) {
+      return NextResponse.json({ message: error.message }, { status: getAuthErrorStatus(error) });
+    }
     return NextResponse.json(
       { message: 'Failed to fetch contacts' },
       { status: 500 }

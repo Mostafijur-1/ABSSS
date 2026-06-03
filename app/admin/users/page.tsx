@@ -323,7 +323,7 @@ export default function AdminUsers() {
 
         {/* Stats */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <div className="bg-white rounded-lg shadow p-6">
+          <div className="bg-white rounded-lg shadow p-4 sm:p-6">
             <div className="flex items-center">
               <div className="p-3 rounded-lg bg-blue-500">
                 <Shield className="h-6 w-6 text-white" />
@@ -420,26 +420,26 @@ export default function AdminUsers() {
         <div className="bg-white rounded-lg shadow overflow-hidden">
           <div className="divide-y divide-gray-200">
             {filteredUsers.map((user) => (
-              <div key={user._id} className="p-6">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-4">
-                    <div className="w-12 h-12 bg-gray-300 rounded-full flex items-center justify-center">
+              <div key={user._id} className="p-4 sm:p-6">
+                <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+                  <div className="flex min-w-0 items-start gap-4">
+                    <div className="w-12 h-12 bg-gray-300 rounded-full flex flex-shrink-0 items-center justify-center">
                       <span className="text-gray-600 font-medium text-lg">
                         {user.username.charAt(0).toUpperCase()}
                       </span>
                     </div>
-                    <div>
+                    <div className="min-w-0">
                       <h3 className="text-lg font-semibold text-gray-900">
                         {user.username}
                       </h3>
-                      <div className="flex items-center text-sm text-gray-500 space-x-4">
-                        <div className="flex items-center">
-                          <Mail className="w-4 h-4 mr-1" />
-                          <span>{user.email}</span>
+                      <div className="mt-1 flex flex-col gap-1 text-sm text-gray-500 sm:flex-row sm:flex-wrap sm:gap-x-4">
+                        <div className="flex min-w-0 items-center">
+                          <Mail className="w-4 h-4 mr-1 flex-shrink-0" />
+                          <span className="truncate">{user.email}</span>
                         </div>
                         <div className="flex items-center">
-                          <Calendar className="w-4 h-4 mr-1" />
-                          <span>Last login: {new Date(user.lastLogin).toLocaleDateString()}</span>
+                          <Calendar className="w-4 h-4 mr-1 flex-shrink-0" />
+                          <span>Last login: {user.lastLogin ? new Date(user.lastLogin).toLocaleDateString() : 'Never'}</span>
                         </div>
                       </div>
                       <div className="flex items-center mt-2 space-x-2">
@@ -456,12 +456,12 @@ export default function AdminUsers() {
                           {user.isActive ? 'Active' : 'Inactive'}
                         </span>
                       </div>
-                      <div className="flex items-center mt-1 text-xs text-gray-500">
-                        <span>Permissions: {user.permissions.join(', ')}</span>
+                      <div className="mt-1 text-xs text-gray-500">
+                        <span className="break-words">Permissions: {user.permissions.join(', ') || 'None'}</span>
                       </div>
                     </div>
                   </div>
-                  <div className="flex items-center space-x-2">
+                  <div className="flex flex-wrap items-center gap-2 self-end lg:self-auto">
                     <button
                       onClick={() => toggleUserStatus(user)}
                       className={`p-2 rounded-lg transition-colors ${

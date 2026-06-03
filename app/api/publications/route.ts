@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { connectDB } from '@/lib/database';
 import Publication from '@/lib/models/Publication';
+import { getAuthErrorStatus, requirePermission } from '@/lib/auth';
 
 export async function GET(request: NextRequest) {
   try {
@@ -37,6 +38,7 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
+    requirePermission(request, 'publications');
     await connectDB();
     const body = await request.json();
     
@@ -46,6 +48,9 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(savedPublication, { status: 201 });
   } catch (error) {
     console.error('Error creating publication:', error);
+    if (error instanceof Error && ['Authentication required', 'Insufficient permissions'].includes(error.message)) {
+      return NextResponse.json({ message: error.message }, { status: getAuthErrorStatus(error) });
+    }
     return NextResponse.json(
       { message: 'Failed to create publication' },
       { status: 500 }
