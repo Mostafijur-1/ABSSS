@@ -17,53 +17,61 @@ export default function PublicationDetailPage() {
   const [error, setError] = useState('');
 
   useEffect(() => {
-    if (id) {
-      fetchPublication();
-    }
+    if (!id) return;
+
+    const controller = new AbortController();
+
+    const fetchPublication = async () => {
+      setLoading(true);
+      setError('');
+      try {
+        const response = await fetch(`/api/publications/${id}`, { signal: controller.signal });
+        if (!response.ok) {
+          if (response.status === 404) {
+            throw new Error('Publication not found');
+          }
+          throw new Error('Failed to fetch publication');
+        }
+        const data = await response.json();
+        setPublication(data);
+      } catch (err: any) {
+        if (err && err.name === 'AbortError') return;
+        setError(err?.message || 'Failed to load publication');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPublication();
+
+    return () => controller.abort();
   }, [id]);
 
   useEffect(() => {
-    if (publication) {
-      fetchRelatedPublications();
-    }
-  }, [publication]);
-
-  const fetchPublication = async () => {
-    try {
-      const response = await fetch(`/api/publications/${id}`);
-      if (!response.ok) {
-        if (response.status === 404) {
-          throw new Error('Publication not found');
-        }
-        throw new Error('Failed to fetch publication');
-      }
-      const data = await response.json();
-      setPublication(data);
-    } catch (err: any) {
-      setError(err.message || 'Failed to load publication');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const fetchRelatedPublications = async () => {
     if (!publication) return;
-    
-    try {
-      const response = await fetch('/api/publications');
-      if (response.ok) {
-        const data = await response.json();
-        // Filter out current publication and get publications from same category
+
+    const controller = new AbortController();
+
+    const fetchRelatedPublications = async () => {
+      try {
+        const response = await fetch('/api/publications', { signal: controller.signal });
+        if (!response.ok) return;
+        const data: Publication[] = await response.json();
         const related = data
-          .filter((pub: Publication) => pub._id !== publication._id)
-          .filter((pub: Publication) => pub.category === publication.category)
+          .filter((pub) => pub._id !== publication._id)
+          .filter((pub) => pub.category === publication.category)
           .slice(0, 3);
         setRelatedPublications(related);
+      } catch (err: any) {
+        if (err && err.name === 'AbortError') return;
+        console.error('Failed to fetch related publications:', err);
       }
-    } catch (err) {
-      console.error('Failed to fetch related publications:', err);
-    }
-  };
+    };
+
+    fetchRelatedPublications();
+
+    return () => controller.abort();
+  }, [publication]);
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);

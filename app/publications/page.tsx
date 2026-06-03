@@ -16,40 +16,47 @@ export default function PublicationsPage() {
   const [selectedCategory, setSelectedCategory] = useState('all');
 
   useEffect(() => {
+    const controller = new AbortController();
+
+    const fetchPublications = async () => {
+      setLoading(true);
+      setError('');
+      try {
+        const response = await fetch('/api/publications', { signal: controller.signal });
+        if (!response.ok) throw new Error('Failed to fetch publications');
+        const data = await response.json();
+        setPublications(data);
+      } catch (err: any) {
+        if (err && err.name === 'AbortError') return; // request was cancelled
+        setError(err?.message || 'Failed to load publications');
+      } finally {
+        setLoading(false);
+      }
+    };
+
     fetchPublications();
+
+    return () => controller.abort();
   }, []);
 
   useEffect(() => {
     filterPublications();
   }, [publications, searchTerm, selectedCategory]);
 
-  const fetchPublications = async () => {
-    try {
-      const response = await fetch('/api/publications');
-      if (!response.ok) throw new Error('Failed to fetch publications');
-      const data = await response.json();
-      setPublications(data);
-    } catch (err: any) {
-      setError(err.message || 'Failed to load publications');
-    } finally {
-      setLoading(false);
-    }
-  };
-
   const filterPublications = () => {
+    const term = searchTerm.trim().toLowerCase();
     let filtered = publications;
 
-    // Filter by search term
-    if (searchTerm) {
-      filtered = filtered.filter(publication =>
-        publication.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        publication.authors.some(author => author.toLowerCase().includes(searchTerm.toLowerCase())) ||
-        publication.abstract.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        publication.journal.toLowerCase().includes(searchTerm.toLowerCase())
-      );
+    if (term) {
+      filtered = filtered.filter(publication => {
+        const inTitle = (publication.title || '').toLowerCase().includes(term);
+        const inAuthors = Array.isArray(publication.authors) && publication.authors.some(author => (author || '').toLowerCase().includes(term));
+        const inAbstract = (publication.abstract || '').toLowerCase().includes(term);
+        const inJournal = (publication.journal || '').toLowerCase().includes(term);
+        return inTitle || inAuthors || inAbstract || inJournal;
+      });
     }
 
-    // Filter by category
     if (selectedCategory !== 'all') {
       filtered = filtered.filter(publication => publication.category === selectedCategory);
     }

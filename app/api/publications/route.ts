@@ -5,6 +5,11 @@ import { getAuthErrorStatus, requirePermission } from '@/lib/auth';
 
 export async function GET(request: NextRequest) {
   try {
+    console.log('GET /api/publications called - headers:', {
+      referer: request.headers.get('referer'),
+      origin: request.headers.get('origin'),
+      ua: request.headers.get('user-agent'),
+    });
     await connectDB();
     const { searchParams } = new URL(request.url);
     const category = searchParams.get('category');
