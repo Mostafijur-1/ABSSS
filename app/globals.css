@@ -21,7 +21,7 @@
 
 @layer components {
   .btn-primary {
-    @apply relative bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200 shadow-md hover:shadow-lg inline-flex items-center justify-center gap-2 overflow-hidden;
+    @apply relative bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-150 active:scale-[0.98] active:brightness-95 shadow-md hover:shadow-lg inline-flex items-center justify-center gap-2 overflow-hidden transform;
   }
 
   .btn-primary::before {
@@ -30,11 +30,11 @@
   }
   
   .btn-secondary {
-    @apply relative bg-secondary-400 border-2 border-secondary-500 text-white hover:bg-secondary-500 font-semibold py-2.5 px-6 rounded-lg transition-all duration-200 shadow-sm hover:shadow-md inline-flex items-center justify-center gap-2;
+    @apply relative bg-secondary-400 border-2 border-secondary-500 text-white hover:bg-secondary-500 font-semibold py-2.5 px-6 rounded-lg transition-all duration-150 active:scale-[0.98] active:brightness-95 shadow-sm hover:shadow-md inline-flex items-center justify-center gap-2 transform;
   }
 
   .btn-outline {
-    @apply relative bg-transparent border-2 border-gray-300 text-gray-700 hover:border-primary-600 hover:text-primary-600 font-semibold py-2.5 px-6 rounded-lg transition-all duration-200 inline-flex items-center justify-center gap-2;
+    @apply relative bg-transparent border-2 border-gray-300 text-gray-700 hover:border-primary-600 hover:text-primary-600 font-semibold py-2.5 px-6 rounded-lg transition-all duration-150 active:scale-[0.98] active:brightness-95 inline-flex items-center justify-center gap-2 transform;
   }
   
   .card {
@@ -134,4 +134,21 @@
 
 .animation-delay-4000 {
   animation-delay: 4s;
+}
+
+@keyframes pageTransition {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+    filter: blur(1px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
+}
+
+.animate-page-transition {
+  animation: pageTransition 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 } 

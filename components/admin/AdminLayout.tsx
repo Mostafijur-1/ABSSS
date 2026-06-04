@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { User, authStorage, hasPermission } from '@/lib/clientAuth';
 import { 
   Menu, 
@@ -12,10 +13,12 @@ import {
   Users, 
   MessageSquare, 
   Settings, 
-  LogOut,
-  BarChart3,
-  Shield,
-  User as UserIcon
+  LogOut, 
+  BarChart3, 
+  Shield, 
+  User as UserIcon,
+  BookOpen,
+  Activity
 } from '@/components/Icons';
 
 interface AdminLayoutProps {
@@ -49,6 +52,8 @@ export default function AdminLayout({ children, title = 'Admin Dashboard' }: Adm
 
   const navigation = [
     { name: 'Dashboard', href: '/admin', icon: Home, permission: null },
+    { name: 'Courses', href: '/admin/courses', icon: BookOpen, permission: 'courses' },
+    { name: 'Recent Activities', href: '/admin/recent-activities', icon: Activity, permission: 'activities' },
     { name: 'Events', href: '/admin/events', icon: Calendar, permission: 'events' },
     { name: 'Publications', href: '/admin/publications', icon: FileText, permission: 'publications' },
     { name: 'Blogs', href: '/admin/blogs', icon: FileText, permission: 'publications' },
@@ -93,14 +98,14 @@ export default function AdminLayout({ children, title = 'Admin Dashboard' }: Adm
             {navigation.map((item) => {
               const Icon = item.icon;
               return (
-                <a
+                <Link
                   key={item.name}
                   href={item.href}
                   className="group flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-700 hover:text-blue-600 hover:bg-blue-50 transition-colors"
                 >
                   <Icon className="mr-3 h-5 w-5 text-gray-400 group-hover:text-blue-600" />
                   {item.name}
-                </a>
+                </Link>
               );
             })}
           </div>

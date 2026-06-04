@@ -114,8 +114,10 @@ export default function AdminPublications() {
           formDataForUpload.append('pdf', selectedFile);
           
           // Upload PDF to get Cloudinary URL
+          const token = authStorage.getToken();
           const uploadResponse = await fetch('/api/upload/pdf', {
             method: 'POST',
+            headers: token ? { Authorization: `Bearer ${token}` } : {},
             body: formDataForUpload
           });
           

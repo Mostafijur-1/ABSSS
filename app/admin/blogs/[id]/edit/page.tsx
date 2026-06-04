@@ -1,14 +1,17 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import AdminLayout from '@/components/admin/AdminLayout';
 import { blogsApi } from '@/lib/api';
+import { authStorage } from '@/lib/clientAuth';
 import FileUpload from '@/components/FileUpload';
 import { ArrowLeft, Save, Tag, FileText, User, Calendar, Image } from '@/components/Icons';
 
-export default function NewBlogPage() {
+export default function EditBlogPage({ params }: { params: { id: string } }) {
   const router = useRouter();
+  const id = params.id;
+
   const [formData, setFormData] = useState({
     title: '',
     content: '',
@@ -19,8 +22,10 @@ export default function NewBlogPage() {
     isPublished: false
   });
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
+  const [existingImageUrl, setExistingImageUrl] = useState<string | null>(null);
   const [currentTag, setCurrentTag] = useState('');
   const [saving, setSaving] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
   const categories = [
@@ -30,6 +35,29 @@ export default function NewBlogPage() {
     { value: 'news', label: 'News' },
     { value: 'tutorial', label: 'Tutorial' }
   ];
+
+  useEffect(() => {
+    const fetchBlog = async () => {
+      try {
+        const blog = await blogsApi.getById(id);
+        setFormData({
+          title: blog.title || '',
+          content: blog.content || '',
+          excerpt: blog.excerpt || '',
+          author: blog.author || '',
+          category: (blog.category as any) || '',
+          tags: blog.tags || [],
+          isPublished: blog.isPublished ?? false
+        });
+        setExistingImageUrl(blog.imageUrl || null);
+      } catch (err: any) {
+        setError(err.message || 'Failed to fetch blog post details');
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchBlog();
+  }, [id]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -50,9 +78,8 @@ export default function NewBlogPage() {
         excerpt: formData.excerpt,
         author: formData.author,
         category: formData.category,
-        imageUrl: null,
+        imageUrl: existingImageUrl,
         tags: formData.tags,
-        publishedDate: new Date().toISOString(),
         isPublished: formData.isPublished
       };
 
@@ -62,24 +89,28 @@ export default function NewBlogPage() {
         formDataForUpload.append('image', selectedImage);
         
         // Upload image to get Cloudinary URL
+        const token = authStorage.getToken();
         const uploadResponse = await fetch('/api/upload/image', {
           method: 'POST',
+          headers: token ? { Authorization: `Bearer ${token}` } : {},
           body: formDataForUpload
         });
         
         if (uploadResponse.ok) {
           const uploadResult = await uploadResponse.json();
           blogData.imageUrl = uploadResult.url; // Add Cloudinary URL to blog data
+        } else {
+          throw new Error('Failed to upload image');
         }
       }
 
-      // Create blog using api helper which attaches proper Authorization headers
-      await blogsApi.create(blogData);
+      // Update blog with JSON
+      await blogsApi.update(id, blogData);
 
       // Navigate to the admin blog list
       router.push('/admin/blogs');
     } catch (err: any) {
-      setError(err.message || 'Failed to create blog');
+      setError(err.message || 'Failed to update blog');
     } finally {
       setSaving(false);
     }
@@ -113,8 +144,21 @@ export default function NewBlogPage() {
     }
   };
 
+  if (loading) {
+    return (
+      <AdminLayout title="Edit Blog Post">
+        <div className="flex items-center justify-center h-64">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+            <p className="mt-4 text-gray-600">Loading blog details...</p>
+          </div>
+        </div>
+      </AdminLayout>
+    );
+  }
+
   return (
-    <AdminLayout title="Add New Blog Post">
+    <AdminLayout title="Edit Blog Post">
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="mb-8">
@@ -126,8 +170,8 @@ export default function NewBlogPage() {
               <ArrowLeft className="h-5 w-5" />
             </button>
             <div>
-              <h1 className="text-2xl font-bold text-gray-900">Add New Blog Post</h1>
-              <p className="text-gray-600 mt-1">Create a new blog post or article</p>
+              <h1 className="text-2xl font-bold text-gray-900">Edit Blog Post</h1>
+              <p className="text-gray-600 mt-1">Modify the details of your blog post</p>
             </div>
           </div>
         </div>
@@ -222,6 +266,7 @@ export default function NewBlogPage() {
                     onFileSelect={setSelectedImage}
                     maxSize={5}
                     required={false}
+                    preview={existingImageUrl || undefined}
                   />
 
                   {/* Tags */}
@@ -301,13 +346,13 @@ export default function NewBlogPage() {
                     className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
                   />
                   <label htmlFor="isPublished" className="ml-2 block text-sm text-gray-900">
-                    Publish immediately
+                    Published
                   </label>
                 </div>
                 <p className="mt-1 text-sm text-gray-500">
                   {formData.isPublished 
-                    ? 'This blog post will be visible to the public immediately.' 
-                    : 'Save as draft. You can publish it later from the blog management page.'}
+                    ? 'This blog post will be visible to the public.' 
+                    : 'Save as draft. You can publish it later.'}
                 </p>
               </div>
             </div>
@@ -334,7 +379,7 @@ export default function NewBlogPage() {
                 ) : (
                   <>
                     <Save className="h-4 w-4 mr-2" />
-                    {formData.isPublished ? 'Publish Blog' : 'Save Draft'}
+                    Save Changes
                   </>
                 )}
               </button>

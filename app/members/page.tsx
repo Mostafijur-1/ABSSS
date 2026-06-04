@@ -6,6 +6,7 @@ import Footer from '@/components/Footer';
 import MemberCard from '@/components/MemberCard';
 import { membersApi } from '@/lib/api';
 import { Users, Filter } from 'lucide-react';
+import Link from 'next/link';
 
 export default function MembersPage() {
   const [allMembers, setAllMembers] = useState<any[]>([]);
@@ -170,9 +171,9 @@ export default function MembersPage() {
               <p className="text-gray-600 text-sm mb-4">
                 Join as a student member to participate in research projects, attend events, and network with peers.
               </p>
-              <a href="/contact" className="btn-primary text-sm">
+              <Link href="/contact" className="btn-primary text-sm">
                 Apply Now
-              </a>
+              </Link>
             </div>
             <div className="card p-6 text-center">
               <div className="bg-primary-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -182,9 +183,9 @@ export default function MembersPage() {
               <p className="text-gray-600 text-sm mb-4">
                 Become a faculty advisor to mentor students and contribute to our research initiatives.
               </p>
-              <a href="/contact" className="btn-primary text-sm">
+              <Link href="/contact" className="btn-primary text-sm">
                 Contact Us
-              </a>
+              </Link>
             </div>
             <div className="card p-6 text-center">
               <div className="bg-primary-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -194,9 +195,9 @@ export default function MembersPage() {
               <p className="text-gray-600 text-sm mb-4">
                 Partner with us on research projects, events, or publications.
               </p>
-              <a href="/contact" className="btn-primary text-sm">
+              <Link href="/contact" className="btn-primary text-sm">
                 Get in Touch
-              </a>
+              </Link>
             </div>
           </div>
         </div>

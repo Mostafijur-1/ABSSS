@@ -77,6 +77,32 @@ export interface User {
   updatedAt: string;
 }
 
+export interface Course {
+  _id: string;
+  title: string;
+  description: string;
+  image?: string | null;
+  instructor?: string | null;
+  status: 'upcoming' | 'completed' | 'ongoing';
+  duration?: string | null;
+  startDate?: string | null;
+  endDate?: string | null;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+export interface RecentActivity {
+  _id: string;
+  title: string;
+  description: string;
+  image?: string | null;
+  date: string;
+  link?: string | null;
+  category?: string | null;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
 type UserInput = {
   username: string;
   email: string;
@@ -221,6 +247,10 @@ export const contactApi = {
   submit: (contact: ContactForm) => 
     apiCall<{ message: string; contact: any }>('/contact', { method: 'POST', body: JSON.stringify(contact) }),
   getAll: () => apiCall<any[]>('/contact'),
+  update: (id: string, contact: Partial<any>) => 
+    apiCall<any>(`/contact/${id}`, { method: 'PATCH', body: JSON.stringify(contact) }),
+  delete: (id: string) => 
+    apiCall<{ message: string }>(`/contact/${id}`, { method: 'DELETE' }),
 };
 
 // Users API
@@ -233,4 +263,29 @@ export const usersApi = {
     apiCall<User>(`/users/${id}`, { method: 'PUT', body: JSON.stringify(user) }),
   delete: (id: string) => apiCall<{ message: string }>(`/users/${id}`, { method: 'DELETE' }),
   toggleStatus: (id: string) => apiCall<User>(`/users/${id}`, { method: 'PATCH' }),
+};
+
+// Courses API
+export const coursesApi = {
+  getAll: () => apiCall<Course[]>('/courses'),
+  getUpcoming: () => apiCall<Course[]>('/courses?status=upcoming'),
+  getCompleted: () => apiCall<Course[]>('/courses?status=completed'),
+  getById: (id: string) => apiCall<Course>(`/courses/${id}`),
+  create: (course: Omit<Course, '_id' | 'createdAt' | 'updatedAt'>) => 
+    apiCall<Course>('/courses', { method: 'POST', body: JSON.stringify(course) }),
+  update: (id: string, course: Partial<Course>) => 
+    apiCall<Course>(`/courses/${id}`, { method: 'PUT', body: JSON.stringify(course) }),
+  delete: (id: string) => apiCall<{ message: string }>(`/courses/${id}`, { method: 'DELETE' }),
+};
+
+// Recent Activities API
+export const recentActivitiesApi = {
+  getAll: () => apiCall<RecentActivity[]>('/recent-activities'),
+  getRecent: () => apiCall<RecentActivity[]>('/recent-activities?limit=3'),
+  getById: (id: string) => apiCall<RecentActivity>(`/recent-activities/${id}`),
+  create: (activity: Omit<RecentActivity, '_id' | 'createdAt' | 'updatedAt'>) => 
+    apiCall<RecentActivity>('/recent-activities', { method: 'POST', body: JSON.stringify(activity) }),
+  update: (id: string, activity: Partial<RecentActivity>) => 
+    apiCall<RecentActivity>(`/recent-activities/${id}`, { method: 'PUT', body: JSON.stringify(activity) }),
+  delete: (id: string) => apiCall<{ message: string }>(`/recent-activities/${id}`, { method: 'DELETE' }),
 }; 

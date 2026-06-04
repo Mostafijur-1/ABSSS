@@ -4,8 +4,9 @@ import EventCard from '@/components/EventCard';
 import PublicationCard from '@/components/PublicationCard';
 import Event from '@/lib/models/Event';
 import Publication from '@/lib/models/Publication';
+import RecentActivity from '@/lib/models/RecentActivity';
 import { connectDB } from '@/lib/database';
-import { Event as EventType, Publication as PublicationType } from '@/lib/api';
+import { Event as EventType, Publication as PublicationType, RecentActivity as ActivityType } from '@/lib/api';
 import { ArrowRight, Sparkles, Users, Calendar, BookOpen, Zap, Globe, Trophy } from 'lucide-react';
 import Link from 'next/link';
 
@@ -31,6 +32,16 @@ function serializePublication(publication: any): PublicationType {
   };
 }
 
+function serializeActivity(activity: any): ActivityType {
+  return {
+    ...activity,
+    _id: activity._id.toString(),
+    date: activity.date?.toISOString?.() || activity.date,
+    createdAt: activity.createdAt?.toISOString?.() || activity.createdAt,
+    updatedAt: activity.updatedAt?.toISOString?.() || activity.updatedAt,
+  };
+}
+
 async function getHomePageData() {
   try {
     await connectDB();
@@ -52,21 +63,28 @@ async function getHomePageData() {
       .limit(3)
       .lean();
 
+    const activities = await RecentActivity.find({})
+      .sort({ date: -1 })
+      .limit(3)
+      .lean();
+
     return {
       upcomingEvents: events.map(serializeEvent),
       recentPublications: publications.map(serializePublication),
+      recentActivities: activities.map(serializeActivity),
     };
   } catch (error) {
     console.error('Homepage data fetch failed:', error);
     return {
       upcomingEvents: [],
       recentPublications: [],
+      recentActivities: [],
     };
   }
 }
 
 export default async function HomePage() {
-  const { upcomingEvents, recentPublications } = await getHomePageData();
+  const { upcomingEvents, recentPublications, recentActivities } = await getHomePageData();
 
   return (
     <div className="min-h-screen">
@@ -258,6 +276,80 @@ export default async function HomePage() {
               </div>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* Featured Recent Activities Section */}
+      <section className="section-padding bg-gradient-to-b from-white to-gray-50 border-t border-gray-100">
+        <div className="container-max">
+          <div className="text-center mb-16">
+            <div className="inline-flex items-center gap-2 mb-3 bg-primary-100 px-3 py-1 rounded-full text-xs font-bold text-primary-900 border border-primary-200">
+              <Sparkles className="h-4 w-4 text-primary-600 animate-pulse" />
+              <span>LATEST UPDATES</span>
+            </div>
+            <h2 className="text-4xl font-bold text-gray-950 mb-3">
+              Featured Recent Activities
+            </h2>
+            <p className="text-gray-600 text-lg max-w-2xl mx-auto">
+              Stay updated with our latest milestones, scientific events, and scientific breakthroughs.
+            </p>
+          </div>
+
+          {recentActivities && recentActivities.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {recentActivities.map((activity) => (
+                <div key={activity._id} className="card p-0 hover:border-primary-100 border border-gray-100 flex flex-col h-full group">
+                  {activity.image && (
+                    <div className="aspect-video overflow-hidden bg-gradient-to-br from-gray-100 to-gray-200 relative">
+                      <img
+                        src={activity.image}
+                        alt={activity.title}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      />
+                      {activity.category && (
+                        <span className="absolute bottom-4 left-4 bg-primary-900/80 backdrop-blur-sm text-white px-2.5 py-1 rounded-md text-xs font-semibold">
+                          {activity.category}
+                        </span>
+                      )}
+                    </div>
+                  )}
+                  <div className="p-6 flex-1 flex flex-col">
+                    <div className="text-xs text-gray-500 font-semibold mb-3 flex items-center">
+                      <Calendar className="w-3.5 h-3.5 mr-1.5 text-primary-600" />
+                      {new Date(activity.date).toLocaleDateString('en-US', {
+                        year: 'numeric',
+                        month: 'short',
+                        day: 'numeric',
+                      })}
+                    </div>
+                    <h3 className="text-lg font-bold text-gray-900 mb-3 group-hover:text-primary-600 transition-colors line-clamp-2">
+                      {activity.title}
+                    </h3>
+                    <p className="text-gray-600 text-sm line-clamp-3 leading-relaxed mb-4 flex-1">
+                      {activity.description}
+                    </p>
+                    {activity.link && (
+                      <a
+                        href={activity.link}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center text-primary-600 hover:text-primary-700 font-semibold text-sm mt-auto"
+                      >
+                        Read More
+                        <ArrowRight className="w-3.5 h-3.5 ml-1.5 group-hover:translate-x-1 transition-transform" />
+                      </a>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-12 bg-gray-50 border border-dashed border-gray-200 rounded-2xl">
+              <BookOpen className="mx-auto h-12 w-12 text-gray-400" />
+              <h3 className="mt-2 text-sm font-medium text-gray-900">No recent activities</h3>
+              <p className="mt-1 text-sm text-gray-500">Check back later for activities updates.</p>
+            </div>
+          )}
         </div>
       </section>
 

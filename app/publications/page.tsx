@@ -6,6 +6,7 @@ import Footer from '@/components/Footer';
 import PublicationCard from '@/components/PublicationCard';
 import { Publication } from '@/lib/api';
 import { FileText, Search } from 'lucide-react';
+import Link from 'next/link';
 
 export default function PublicationsPage() {
   const [publications, setPublications] = useState<Publication[]>([]);
@@ -297,9 +298,9 @@ export default function PublicationsPage() {
           <p className="text-xl text-primary-100 mb-8 max-w-2xl mx-auto">
             Have research to share? We welcome submissions from students, faculty, and researchers.
           </p>
-          <a href="/contact" className="btn-secondary">
+          <Link href="/contact" className="btn-secondary">
             Submit Your Work
-          </a>
+          </Link>
         </div>
       </section>
 

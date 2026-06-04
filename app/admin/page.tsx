@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import AdminLayout from '@/components/admin/AdminLayout';
+import Link from 'next/link';
 import { authStorage } from '@/lib/clientAuth';
 import { eventsApi, blogsApi } from '@/lib/api';
 import { 
@@ -249,34 +250,34 @@ export default function AdminDashboard() {
         <div className="bg-white rounded-lg shadow p-6">
           <h3 className="text-lg font-medium text-gray-900 mb-4">Quick Actions</h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            <a
+            <Link
               href="/admin/events"
               className="flex items-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
             >
               <Calendar className="h-5 w-5 text-blue-600 mr-3" />
               <span className="text-sm font-medium text-gray-900">Manage Events</span>
-            </a>
-            <a
+            </Link>
+            <Link
               href="/admin/publications"
               className="flex items-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
             >
               <FileText className="h-5 w-5 text-purple-600 mr-3" />
               <span className="text-sm font-medium text-gray-900">Manage Publications</span>
-            </a>
-            <a
+            </Link>
+            <Link
               href="/admin/members"
               className="flex items-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
             >
               <Users className="h-5 w-5 text-orange-600 mr-3" />
               <span className="text-sm font-medium text-gray-900">Manage Members</span>
-            </a>
-            <a
+            </Link>
+            <Link
               href="/admin/messages"
               className="flex items-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
             >
               <MessageSquare className="h-5 w-5 text-red-600 mr-3" />
               <span className="text-sm font-medium text-gray-900">View Messages</span>
-            </a>
+            </Link>
           </div>
         </div>
 

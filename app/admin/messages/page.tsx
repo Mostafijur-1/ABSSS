@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import AdminLayout from '@/components/admin/AdminLayout';
 import { authStorage } from '@/lib/clientAuth';
+import { contactApi } from '@/lib/api';
 import { 
   MessageSquare, 
   Search,
@@ -40,32 +41,8 @@ export default function AdminMessages() {
 
   const fetchMessages = async () => {
     try {
-      // This would be the actual API call
-      // const data = await contactApi.getAll();
-      // For now, using mock data
-      const mockData: ContactMessage[] = [
-        {
-          _id: '1',
-          name: 'John Doe',
-          email: 'john@example.com',
-          subject: 'Question about membership',
-          message: 'I would like to know more about becoming a member of ABSSS.',
-          isRead: false,
-          createdAt: new Date(Date.now() - 86400000).toISOString(), // 1 day ago
-          updatedAt: new Date(Date.now() - 86400000).toISOString()
-        },
-        {
-          _id: '2',
-          name: 'Jane Smith',
-          email: 'jane@example.com',
-          subject: 'Event inquiry',
-          message: 'Can you provide more details about the upcoming conference?',
-          isRead: true,
-          createdAt: new Date(Date.now() - 172800000).toISOString(), // 2 days ago
-          updatedAt: new Date(Date.now() - 172800000).toISOString()
-        }
-      ];
-      setMessages(mockData);
+      const data = await contactApi.getAll();
+      setMessages(Array.isArray(data) ? data : []);
     } catch (err: any) {
       setError(err.message || 'Failed to load messages');
     } finally {
@@ -86,7 +63,7 @@ export default function AdminMessages() {
 
   const handleMarkAsRead = async (id: string) => {
     try {
-      // API call would be here
+      await contactApi.update(id, { isRead: true });
       setMessages(messages.map(m => m._id === id ? { ...m, isRead: true } : m));
     } catch (err: any) {
       setError(err.message || 'Failed to mark message as read');
@@ -97,7 +74,7 @@ export default function AdminMessages() {
     if (!confirm('Are you sure you want to delete this message?')) return;
 
     try {
-      // API call would be here
+      await contactApi.delete(id);
       setMessages(messages.filter(m => m._id !== id));
       if (selectedMessage?._id === id) {
         setSelectedMessage(null);

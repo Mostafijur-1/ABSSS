@@ -26,7 +26,10 @@ export async function GET(request: NextRequest) {
       unreadContacts,
       totalUsers,
       recentBlogs,
-      recentEvents
+      recentEvents,
+      recentPublications,
+      recentContacts,
+      recentMembers
     ] = await Promise.all([
       Blog.countDocuments(),
       Blog.countDocuments({ isPublished: true }),
@@ -37,7 +40,10 @@ export async function GET(request: NextRequest) {
       Contact.countDocuments({ isRead: false }),
       User.countDocuments(),
       Blog.find().sort({ createdAt: -1 }).limit(5),
-      Event.find().sort({ createdAt: -1 }).limit(5)
+      Event.find().sort({ createdAt: -1 }).limit(5),
+      Publication.find().sort({ createdAt: -1 }).limit(5),
+      Contact.find().sort({ createdAt: -1 }).limit(5),
+      Member.find().sort({ createdAt: -1 }).limit(5)
     ]);
 
     const stats = {
@@ -54,10 +60,10 @@ export async function GET(request: NextRequest) {
       },
       recentActivities: {
         events: recentEvents,
-        publications: [],
+        publications: recentPublications,
         blogs: recentBlogs,
-        contacts: [],
-        members: []
+        contacts: recentContacts,
+        members: recentMembers
       },
       analytics: {
         monthlyEvents: [],

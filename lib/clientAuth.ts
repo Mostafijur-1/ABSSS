@@ -48,6 +48,7 @@ export const authStorage = {
   setToken: (token: string) => {
     if (typeof window !== 'undefined') {
       localStorage.setItem('absss_token', token);
+      try { window.dispatchEvent(new Event('authChanged')); } catch (e) { /* ignore */ }
     }
   },
 
@@ -63,6 +64,7 @@ export const authStorage = {
   removeToken: () => {
     if (typeof window !== 'undefined') {
       localStorage.removeItem('absss_token');
+      try { window.dispatchEvent(new Event('authChanged')); } catch (e) { /* ignore */ }
     }
   },
 
@@ -70,6 +72,7 @@ export const authStorage = {
   setUser: (user: User) => {
     if (typeof window !== 'undefined') {
       localStorage.setItem('absss_user', JSON.stringify(user));
+      try { window.dispatchEvent(new Event('authChanged')); } catch (e) { /* ignore */ }
     }
   },
 
@@ -86,6 +89,7 @@ export const authStorage = {
   removeUser: () => {
     if (typeof window !== 'undefined') {
       localStorage.removeItem('absss_user');
+      try { window.dispatchEvent(new Event('authChanged')); } catch (e) { /* ignore */ }
     }
   },
 
@@ -94,6 +98,7 @@ export const authStorage = {
     if (typeof window !== 'undefined') {
       localStorage.removeItem('absss_token');
       localStorage.removeItem('absss_user');
+      try { window.dispatchEvent(new Event('authChanged')); } catch (e) { /* ignore */ }
     }
   },
 };

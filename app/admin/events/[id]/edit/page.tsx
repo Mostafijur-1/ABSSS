@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import AdminLayout from '@/components/admin/AdminLayout';
 import { eventsApi } from '@/lib/api';
@@ -8,8 +8,10 @@ import { authStorage } from '@/lib/clientAuth';
 import FileUpload from '@/components/FileUpload';
 import { ArrowLeft, Save, Calendar, MapPin, Tag, FileText, Image } from '@/components/Icons';
 
-export default function NewEvent() {
+export default function EditEventPage({ params }: { params: { id: string } }) {
   const router = useRouter();
+  const id = params.id;
+
   const [formData, setFormData] = useState({
     title: '',
     description: '',
@@ -18,8 +20,31 @@ export default function NewEvent() {
     category: '' as 'conference' | 'workshop' | 'seminar' | 'lecture' | 'competition' | ''
   });
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
+  const [existingImageUrl, setExistingImageUrl] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+
+  useEffect(() => {
+    const fetchEvent = async () => {
+      try {
+        const event = await eventsApi.getById(id);
+        setFormData({
+          title: event.title || '',
+          description: event.description || '',
+          date: event.date || '',
+          location: event.location || '',
+          category: (event.category as any) || ''
+        });
+        setExistingImageUrl(event.image || null);
+      } catch (err: any) {
+        setError(err.message || 'Failed to fetch event details');
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchEvent();
+  }, [id]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -40,7 +65,8 @@ export default function NewEvent() {
         date: formData.date,
         location: formData.location,
         category: formData.category,
-        isUpcoming: new Date(formData.date) > new Date()
+        isUpcoming: new Date(formData.date) > new Date(),
+        image: existingImageUrl
       };
 
       // If image is selected, upload to Cloudinary first
@@ -59,15 +85,18 @@ export default function NewEvent() {
         if (uploadResponse.ok) {
           const uploadResult = await uploadResponse.json();
           eventData.image = uploadResult.url; // Add Cloudinary URL to event data
+        } else {
+          throw new Error('Failed to upload image');
         }
       }
 
-      // Create event using api helper which attaches proper Authorization headers
-      await eventsApi.create(eventData);
+      // Update event using api helper which attaches proper Authorization headers
+      await eventsApi.update(id, eventData);
 
+      // Navigate to the admin events list
       router.push('/admin/events');
     } catch (err: any) {
-      setError(err.message || 'Failed to create event');
+      setError(err.message || 'Failed to update event');
     } finally {
       setSaving(false);
     }
@@ -77,8 +106,21 @@ export default function NewEvent() {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
+  if (loading) {
+    return (
+      <AdminLayout title="Edit Event">
+        <div className="flex items-center justify-center h-64">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+            <p className="mt-4 text-gray-600">Loading event details...</p>
+          </div>
+        </div>
+      </AdminLayout>
+    );
+  }
+
   return (
-    <AdminLayout title="Add New Event">
+    <AdminLayout title="Edit Event">
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="mb-8">
@@ -90,8 +132,8 @@ export default function NewEvent() {
               <ArrowLeft className="h-5 w-5" />
             </button>
             <div>
-              <h1 className="text-2xl font-bold text-gray-900">Add New Event</h1>
-              <p className="text-gray-600 mt-1">Create a new event, conference, workshop, or seminar</p>
+              <h1 className="text-2xl font-bold text-gray-900">Edit Event</h1>
+              <p className="text-gray-600 mt-1">Modify the details of your event</p>
             </div>
           </div>
         </div>
@@ -211,6 +253,7 @@ export default function NewEvent() {
                   onFileSelect={setSelectedImage}
                   maxSize={5}
                   required={false}
+                  preview={existingImageUrl || undefined}
                 />
               </div>
             </div>
@@ -232,12 +275,12 @@ export default function NewEvent() {
                 {saving ? (
                   <>
                     <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                    Creating...
+                    Saving...
                   </>
                 ) : (
                   <>
                     <Save className="h-4 w-4 mr-2" />
-                    Create Event
+                    Save Changes
                   </>
                 )}
               </button>
@@ -247,12 +290,12 @@ export default function NewEvent() {
 
         {/* Help Text */}
         <div className="mt-6 bg-blue-50 border border-blue-200 rounded-md p-4">
-          <h4 className="text-sm font-medium text-blue-900 mb-2">Tips for creating events:</h4>
+          <h4 className="text-sm font-medium text-blue-900 mb-2">Tips for editing events:</h4>
           <ul className="text-sm text-blue-800 space-y-1">
             <li>• Use descriptive titles that clearly indicate the event purpose</li>
             <li>• Include complete location details (building, room number, or online link)</li>
             <li>• Choose the most appropriate category for better organization</li>
-            <li>• Add an engaging image to make your event more attractive</li>
+            <li>• Update the image to make your event more attractive</li>
           </ul>
         </div>
       </div>

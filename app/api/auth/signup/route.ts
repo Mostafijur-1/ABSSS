@@ -37,21 +37,21 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ message: 'User with that email or username already exists' }, { status: 409 });
     }
 
-    // Create user
+    // Create user (new users are inactive by default; admins created via secret remain active)
     const newUser = new User({
       username,
       email,
       password,
       role: assignedRole,
       permissions: assignedRole === 'admin' ? ['all'] : [],
-      isActive: true
+      isActive: assignedRole === 'admin' ? true : false
     });
 
     await newUser.save();
 
-    // Prepare JWT if secret is available
+    // Prepare JWT only for active users
     let token = null;
-    if (JWT_SECRET) {
+    if (JWT_SECRET && newUser.isActive) {
       token = jwt.sign(
         {
           userId: newUser._id,
@@ -75,8 +75,10 @@ export async function POST(request: NextRequest) {
       updatedAt: newUser.updatedAt
     };
 
+    const message = newUser.isActive ? 'Signup successful' : 'Signup received — pending admin activation';
+
     return NextResponse.json(
-      { message: 'Signup successful', user: userResponse, token },
+      { message, user: userResponse, token },
       { status: 201 }
     );
 

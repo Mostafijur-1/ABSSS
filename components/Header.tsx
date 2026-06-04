@@ -1,21 +1,41 @@
-'use client';
+"use client";
 
 import Link from 'next/link';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { Menu, X, GraduationCap } from './Icons';
+import { authStorage } from '@/lib/clientAuth';
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [user, setUser] = useState<any>(null);
+
+  useEffect(() => {
+    const load = () => setUser(authStorage.getUser());
+    load();
+    const onAuth = () => load();
+    window.addEventListener('storage', onAuth);
+    window.addEventListener('authChanged', onAuth as EventListener);
+    return () => {
+      window.removeEventListener('storage', onAuth);
+      window.removeEventListener('authChanged', onAuth as EventListener);
+    };
+  }, []);
 
   const navigation = [
     { name: 'Home', href: '/' },
     { name: 'About', href: '/about' },
+    { name: 'Courses', href: '/courses' },
     { name: 'Events', href: '/events' },
     { name: 'Publications', href: '/publications' },
     { name: 'Blog', href: '/blogs' },
     { name: 'Members', href: '/members' },
     { name: 'Contact', href: '/contact' },
   ];
+
+  if (user && user.role === 'admin') {
+    navigation.push({ name: 'Dashboard', href: '/admin' });
+  }
 
   return (
     <header className="bg-white/95 backdrop-blur-sm shadow-sm sticky top-0 z-50 border-b border-gray-100">
@@ -46,12 +66,8 @@ const Header = () => {
             ))}
           </nav>
 
-          {/* CTA Button */}
-          <div className="hidden md:block">
-            <Link href="/contact" className="btn-primary text-sm">
-              Get Involved
-            </Link>
-          </div>
+          {/* CTA / Auth Buttons */}
+          <AuthActions />
 
           {/* Mobile menu button */}
           <button
@@ -64,31 +80,112 @@ const Header = () => {
 
         {/* Mobile Navigation */}
         {isMenuOpen && (
-          <div className="md:hidden border-t border-gray-100 animate-slide-up">
-            <div className="px-2 pt-2 pb-3 space-y-1 bg-gradient-to-b from-white to-gray-50">
-              {navigation.map((item) => (
-                <Link
-                  key={item.name}
-                  href={item.href}
-                  className="block px-4 py-2.5 text-gray-700 hover:text-primary-600 hover:bg-primary-50 rounded-lg font-medium transition-all duration-200"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  {item.name}
-                </Link>
-              ))}
-              <Link
-                href="/contact"
-                className="block px-4 py-2.5 mt-2 btn-primary text-center"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                Get Involved
-              </Link>
-            </div>
-          </div>
+          <MobileMenu navigation={navigation} onClose={() => setIsMenuOpen(false)} />
         )}
       </div>
     </header>
   );
 };
+
+function AuthActions() {
+  const router = useRouter();
+  const [user, setUser] = useState<any>(null);
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  useEffect(() => {
+    const load = () => setUser(authStorage.getUser());
+    load();
+    const onAuth = () => load();
+    window.addEventListener('storage', onAuth);
+    window.addEventListener('authChanged', onAuth as EventListener);
+    return () => {
+      window.removeEventListener('storage', onAuth);
+      window.removeEventListener('authChanged', onAuth as EventListener);
+    };
+  }, []);
+
+  const handleLogout = () => {
+    authStorage.clear();
+    setUser(null);
+    router.push('/login');
+  };
+
+  if (!user) {
+    return (
+      <div className="hidden md:flex items-center space-x-3">
+        <Link href="/login" className="px-3 py-1 text-sm rounded-md text-gray-700 hover:bg-gray-100 border border-gray-200">
+          Login
+        </Link>
+        <Link href="/signup" className="btn-primary text-sm">
+          Register
+        </Link>
+      </div>
+    );
+  }
+
+  return (
+    <div className="hidden md:flex items-center space-x-3 relative">
+      <button onClick={() => setMenuOpen(!menuOpen)} className="flex items-center space-x-2 px-2 py-1 rounded-md hover:bg-gray-100">
+        <div className="w-8 h-8 rounded-full bg-gray-300 flex items-center justify-center text-sm font-medium">{user.username?.charAt(0).toUpperCase()}</div>
+        <span className="text-sm text-gray-700">{user.username}</span>
+      </button>
+      {menuOpen && (
+        <div className="absolute right-0 mt-10 w-44 bg-white shadow-lg rounded-md py-1 z-50">
+          {user.role === 'admin' && (
+            <Link href="/admin" className="block px-4 py-2 text-sm text-primary-600 hover:bg-gray-50 border-b border-gray-100 font-semibold">
+              Dashboard
+            </Link>
+          )}
+          <Link href="/profile" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">Profile</Link>
+          <button onClick={handleLogout} className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">Logout</button>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function MobileMenu({ navigation, onClose }: any) {
+  const [user, setUser] = useState<any>(null);
+
+  useEffect(() => {
+    setUser(authStorage.getUser());
+  }, []);
+
+  return (
+    <div className="md:hidden border-t border-gray-100 animate-slide-up">
+      <div className="px-2 pt-2 pb-3 space-y-1 bg-gradient-to-b from-white to-gray-50">
+        {navigation.map((item: any) => (
+          <Link
+            key={item.name}
+            href={item.href}
+            className="block px-4 py-2.5 text-gray-700 hover:text-primary-600 hover:bg-primary-50 rounded-lg font-medium transition-all duration-200"
+            onClick={onClose}
+          >
+            {item.name}
+          </Link>
+        ))}
+
+        <div className="px-4 py-2">
+          {!user ? (
+            <>
+              <Link href="/login" className="block px-4 py-2.5 text-gray-700 hover:bg-gray-100 rounded-md" onClick={onClose}>Login</Link>
+              <Link href="/signup" className="block mt-2 px-4 py-2.5 text-white bg-blue-600 rounded-md text-center" onClick={onClose}>Register</Link>
+            </>
+          ) : (
+            <>
+              {user.role === 'admin' && (
+                <Link href="/admin" className="block px-4 py-2.5 text-primary-600 hover:bg-gray-100 rounded-md font-semibold" onClick={onClose}>
+                  Dashboard
+                </Link>
+              )}
+              <Link href="/profile" className="block px-4 py-2.5 text-gray-700 hover:bg-gray-100 rounded-md" onClick={onClose}>Profile</Link>
+              <a onClick={() => { authStorage.clear(); onClose(); }} className="block mt-2 px-4 py-2.5 text-gray-700 hover:bg-gray-100 rounded-md cursor-pointer">Logout</a>
+            </>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
 
 export default Header; 

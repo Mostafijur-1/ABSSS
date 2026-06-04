@@ -121,8 +121,10 @@ export default function AdminMembers() {
           formDataForUpload.append('image', selectedFile);
           
           // Upload image to get Cloudinary URL
-          const uploadResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api'}/upload/image`, {
+          const token = authStorage.getToken();
+          const uploadResponse = await fetch('/api/upload/image', {
             method: 'POST',
+            headers: token ? { Authorization: `Bearer ${token}` } : {},
             body: formDataForUpload
           });
           

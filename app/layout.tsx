@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from 'next'
 import './globals.css'
+import PageTransition from '@/components/PageTransition'
 
 export const metadata: Metadata = {
   title: 'ABSSS - Al Biruni Society of Scientific Studies',
@@ -21,8 +22,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="min-h-screen bg-gray-50">
-        {children}
+        <PageTransition>
+          {children}
+        </PageTransition>
       </body>
     </html>
   )
-} 
+}

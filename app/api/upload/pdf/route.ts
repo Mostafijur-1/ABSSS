@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { v2 as cloudinary } from 'cloudinary';
+import { requireAuth, getAuthErrorStatus } from '@/lib/auth';
 
 // Configure Cloudinary
 cloudinary.config({
@@ -10,6 +11,7 @@ cloudinary.config({
 
 export async function POST(request: NextRequest) {
   try {
+    requireAuth(request);
     const formData = await request.formData();
     const file = formData.get('pdf') as File;
 
@@ -67,6 +69,9 @@ export async function POST(request: NextRequest) {
 
   } catch (error) {
     console.error('PDF upload error:', error);
+    if (error instanceof Error && ['Authentication required', 'Insufficient permissions'].includes(error.message)) {
+      return NextResponse.json({ message: error.message }, { status: getAuthErrorStatus(error) });
+    }
     return NextResponse.json(
       { error: 'Failed to upload PDF' },
       { status: 500 }
