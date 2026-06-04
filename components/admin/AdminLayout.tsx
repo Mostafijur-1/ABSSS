@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { User, authStorage, hasPermission } from '@/lib/clientAuth';
 import { 
@@ -31,6 +31,7 @@ export default function AdminLayout({ children, title = 'Admin Dashboard' }: Adm
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
+  const pathname = usePathname();
 
   useEffect(() => {
     const token = authStorage.getToken();
@@ -50,7 +51,7 @@ export default function AdminLayout({ children, title = 'Admin Dashboard' }: Adm
     router.push('/admin/login');
   };
 
-  const navigation = [
+  const allNavigation = [
     { name: 'Dashboard', href: '/admin', icon: Home, permission: null },
     { name: 'Courses', href: '/admin/courses', icon: BookOpen, permission: 'courses' },
     { name: 'Recent Activities', href: '/admin/recent-activities', icon: Activity, permission: 'activities' },
@@ -59,10 +60,21 @@ export default function AdminLayout({ children, title = 'Admin Dashboard' }: Adm
     { name: 'Blogs', href: '/admin/blogs', icon: FileText, permission: 'publications' },
     { name: 'Members', href: '/admin/members', icon: Users, permission: 'members' },
     { name: 'Messages', href: '/admin/messages', icon: MessageSquare, permission: 'contacts' },
-    { name: 'Analytics', href: '/admin/analytics', icon: BarChart3, permission: null },
+    { name: 'Analytics', href: '/admin/analytics', icon: BarChart3, permission: 'analytics' },
     { name: 'Users', href: '/admin/users', icon: Shield, permission: 'users' },
     { name: 'Profile', href: '/admin/profile', icon: UserIcon, permission: null },
-  ].filter(item => !item.permission || hasPermission(user, item.permission));
+  ];
+
+  const navigation = allNavigation.filter(item => !item.permission || hasPermission(user, item.permission));
+
+  const currentNavItem = allNavigation.find(item => {
+    if (item.href === '/admin') {
+      return pathname === '/admin';
+    }
+    return pathname.startsWith(item.href);
+  });
+
+  const isAllowed = !currentNavItem || !currentNavItem.permission || hasPermission(user, currentNavItem.permission);
 
   if (loading) {
     return (
@@ -162,7 +174,23 @@ export default function AdminLayout({ children, title = 'Admin Dashboard' }: Adm
 
         {/* Page content */}
         <main className="flex-1 p-4 sm:p-6 lg:p-8 overflow-auto">
-          {children}
+          {isAllowed ? (
+            children
+          ) : (
+            <div className="bg-white rounded-lg shadow-lg p-8 text-center max-w-2xl mx-auto my-12">
+              <Shield className="mx-auto h-16 w-16 text-red-500 mb-4 animate-pulse" />
+              <h2 className="text-2xl font-bold text-gray-900 mb-2">Access Denied</h2>
+              <p className="text-gray-600 mb-6">
+                You do not have the required permissions to view this page. Please contact your system administrator if you believe this is an error.
+              </p>
+              <Link
+                href="/admin"
+                className="inline-flex items-center px-4 py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors"
+              >
+                Return to Dashboard
+              </Link>
+            </div>
+          )}
         </main>
       </div>
 

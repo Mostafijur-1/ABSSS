@@ -139,18 +139,31 @@ export default function AdminUsers() {
     });
     const [saving, setSaving] = useState(false);
 
-    const allPermissions = ['events', 'publications', 'members', 'contacts', 'users', 'analytics'];
+    const permissionDetails = [
+      { id: 'courses', label: 'Courses', description: 'Create and manage educational courses' },
+      { id: 'activities', label: 'Recent Activities', description: 'Manage timeline updates and recent campus activity logs' },
+      { id: 'events', label: 'Events', description: 'Create, schedule, and configure campus and seminar events' },
+      { id: 'publications', label: 'Publications & Blogs', description: 'Manage academic publications, files, and blog posts' },
+      { id: 'members', label: 'Members', description: 'Add, view, and manage records for students, faculty, and alumni' },
+      { id: 'contacts', label: 'Messages', description: 'Access contact forms and respond to inquiry messages' },
+      { id: 'analytics', label: 'Analytics', description: 'View system usage graphs, page views, and analytical metrics' },
+      { id: 'users', label: 'User Management', description: 'Create, update, and manage administrative team permissions' }
+    ];
+
+    const isAdmin = formData.role === 'admin';
 
     const handlePermissionChange = (permission: string, checked: boolean) => {
+      if (isAdmin) return;
+
       if (checked) {
         setFormData({
           ...formData,
-          permissions: [...formData.permissions, permission]
+          permissions: [...formData.permissions.filter(p => p !== 'all'), permission]
         });
       } else {
         setFormData({
           ...formData,
-          permissions: formData.permissions.filter(p => p !== permission)
+          permissions: formData.permissions.filter(p => p !== permission && p !== 'all')
         });
       }
     };
@@ -159,15 +172,20 @@ export default function AdminUsers() {
       e.preventDefault();
       setSaving(true);
 
+      const submitData = {
+        ...formData,
+        permissions: formData.role === 'admin' ? ['all'] : formData.permissions.filter(p => p !== 'all')
+      };
+
       try {
         if (user) {
           // Edit existing user
-          await usersApi.update(user._id, formData);
+          await usersApi.update(user._id, submitData);
         } else {
           // Create new user
           await usersApi.create({
-            ...formData,
-            role: formData.role as 'admin' | 'moderator' | 'editor'
+            ...submitData,
+            role: submitData.role as 'admin' | 'moderator' | 'editor'
           });
         }
         onSave();
@@ -236,21 +254,47 @@ export default function AdminUsers() {
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-3">Permissions</label>
-              <div className="grid grid-cols-2 gap-3">
-                {allPermissions.map((permission) => (
-                  <div key={permission} className="flex items-center">
-                    <input
-                      type="checkbox"
-                      id={permission}
-                      checked={formData.permissions.includes(permission)}
-                      onChange={(e) => handlePermissionChange(permission, e.target.checked)}
-                      className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                    />
-                    <label htmlFor={permission} className="ml-2 block text-sm text-gray-900 capitalize">
-                      {permission}
-                    </label>
-                  </div>
-                ))}
+              
+              {isAdmin && (
+                <div className="mb-4 bg-blue-50 border border-blue-200 text-blue-800 rounded-md p-3 text-sm flex items-center">
+                  <Shield className="w-5 h-5 text-blue-500 mr-2 flex-shrink-0 animate-pulse" />
+                  <span>Admins always have full access to all system modules and permissions.</span>
+                </div>
+              )}
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-60 overflow-y-auto p-1 border border-gray-100 rounded-md">
+                {permissionDetails.map((permission) => {
+                  const checked = isAdmin || formData.permissions.includes(permission.id);
+                  return (
+                    <div 
+                      key={permission.id} 
+                      className={`flex items-start p-3 border rounded-lg transition-all ${
+                        checked 
+                          ? 'border-blue-500 bg-blue-50/50' 
+                          : 'border-gray-200 hover:border-gray-300 bg-white'
+                      } ${isAdmin ? 'opacity-80 cursor-not-allowed' : 'cursor-pointer hover:shadow-sm'}`}
+                      onClick={() => !isAdmin && handlePermissionChange(permission.id, !checked)}
+                    >
+                      <div className="flex items-center h-5">
+                        <input
+                          type="checkbox"
+                          id={permission.id}
+                          checked={checked}
+                          disabled={isAdmin}
+                          onChange={(e) => handlePermissionChange(permission.id, e.target.checked)}
+                          onClick={(e) => e.stopPropagation()}
+                          className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded cursor-pointer disabled:cursor-not-allowed"
+                        />
+                      </div>
+                      <div className="ml-3 text-sm">
+                        <label htmlFor={permission.id} className="font-medium text-gray-900 cursor-pointer disabled:cursor-not-allowed">
+                          {permission.label}
+                        </label>
+                        <p className="text-gray-500 text-xs mt-0.5">{permission.description}</p>
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
             </div>
             <div className="flex items-center">
@@ -456,8 +500,33 @@ export default function AdminUsers() {
                           {user.isActive ? 'Active' : 'Inactive'}
                         </span>
                       </div>
-                      <div className="mt-1 text-xs text-gray-500">
-                        <span className="break-words">Permissions: {user.permissions.join(', ') || 'None'}</span>
+                      <div className="mt-2 text-xs text-gray-500 flex flex-wrap gap-1 items-center">
+                        <span className="text-gray-400 mr-1">Permissions:</span>
+                        {user.role === 'admin' || user.permissions.includes('all') ? (
+                          <span className="inline-flex items-center px-2 py-0.5 rounded bg-blue-50 text-blue-700 font-medium border border-blue-100">
+                            Full Access
+                          </span>
+                        ) : user.permissions.length === 0 ? (
+                          <span className="inline-flex items-center px-2 py-0.5 rounded bg-gray-50 text-gray-400 border border-gray-100">
+                            No Permissions
+                          </span>
+                        ) : (
+                          user.permissions.map((p) => {
+                            const label = p === 'courses' ? 'Courses' :
+                                          p === 'activities' ? 'Recent Activities' :
+                                          p === 'events' ? 'Events' :
+                                          p === 'publications' ? 'Publications & Blogs' :
+                                          p === 'members' ? 'Members' :
+                                          p === 'contacts' ? 'Messages' :
+                                          p === 'analytics' ? 'Analytics' :
+                                          p === 'users' ? 'User Management' : p;
+                            return (
+                              <span key={p} className="inline-flex items-center px-2 py-0.5 rounded bg-gray-100 text-gray-700 border border-gray-200 capitalize">
+                                {label}
+                              </span>
+                            );
+                          })
+                        )}
                       </div>
                     </div>
                   </div>

@@ -384,14 +384,34 @@ export default function AdminProfile() {
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Permissions</label>
                 <div className="flex flex-wrap gap-1">
-                  {profile.permissions.map((permission, index) => (
-                    <span
-                      key={index}
-                      className="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-gray-100 text-gray-800"
-                    >
-                      {permission === 'all' ? 'Full Access' : permission}
+                  {profile.role === 'admin' || profile.permissions.includes('all') ? (
+                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-medium bg-blue-50 text-blue-700 border border-blue-100">
+                      Full Access
                     </span>
-                  ))}
+                  ) : profile.permissions.length === 0 ? (
+                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-medium bg-gray-50 text-gray-400 border border-gray-100">
+                      No Permissions
+                    </span>
+                  ) : (
+                    profile.permissions.map((permission, index) => {
+                      const label = permission === 'courses' ? 'Courses' :
+                                    permission === 'activities' ? 'Recent Activities' :
+                                    permission === 'events' ? 'Events' :
+                                    permission === 'publications' ? 'Publications & Blogs' :
+                                    permission === 'members' ? 'Members' :
+                                    permission === 'contacts' ? 'Messages' :
+                                    permission === 'analytics' ? 'Analytics' :
+                                    permission === 'users' ? 'User Management' : permission;
+                      return (
+                        <span
+                          key={index}
+                          className="inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-medium bg-gray-100 text-gray-800 border border-gray-200 capitalize"
+                        >
+                          {label}
+                        </span>
+                      );
+                    })
+                  )}
                 </div>
               </div>
             </div>
