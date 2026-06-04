@@ -48,7 +48,7 @@ export default function AdminLayout({ children, title = 'Admin Dashboard' }: Adm
 
   const handleLogout = () => {
     authStorage.clear();
-    router.push('/admin/login');
+    router.push('/');
   };
 
   const allNavigation = [

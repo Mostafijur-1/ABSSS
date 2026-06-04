@@ -15,7 +15,7 @@ export default function ProfilePage() {
 
   const handleLogout = () => {
     authStorage.clear();
-    router.push('/login');
+    router.push('/');
   };
 
   if (!user) {

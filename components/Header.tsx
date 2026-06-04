@@ -107,7 +107,7 @@ function AuthActions() {
   const handleLogout = () => {
     authStorage.clear();
     setUser(null);
-    router.push('/login');
+    router.push('/');
   };
 
   if (!user) {
@@ -146,10 +146,17 @@ function AuthActions() {
 
 function MobileMenu({ navigation, onClose }: any) {
   const [user, setUser] = useState<any>(null);
+  const router = useRouter();
 
   useEffect(() => {
     setUser(authStorage.getUser());
   }, []);
+
+  const handleLogout = () => {
+    authStorage.clear();
+    onClose();
+    router.push('/');
+  };
 
   return (
     <div className="md:hidden border-t border-gray-100 animate-slide-up">
@@ -179,7 +186,7 @@ function MobileMenu({ navigation, onClose }: any) {
                 </Link>
               )}
               <Link href="/profile" className="block px-4 py-2.5 text-gray-700 hover:bg-gray-100 rounded-md" onClick={onClose}>Profile</Link>
-              <a onClick={() => { authStorage.clear(); onClose(); }} className="block mt-2 px-4 py-2.5 text-gray-700 hover:bg-gray-100 rounded-md cursor-pointer">Logout</a>
+              <a onClick={handleLogout} className="block mt-2 px-4 py-2.5 text-gray-700 hover:bg-gray-100 rounded-md cursor-pointer">Logout</a>
             </>
           )}
         </div>
