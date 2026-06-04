@@ -7,6 +7,7 @@ import PublicationCard from '@/components/PublicationCard';
 import { Publication } from '@/lib/api';
 import { FileText, Search } from 'lucide-react';
 import Link from 'next/link';
+import { authStorage } from '@/lib/clientAuth';
 
 export default function PublicationsPage() {
   const [publications, setPublications] = useState<Publication[]>([]);
@@ -15,6 +16,69 @@ export default function PublicationsPage() {
   const [error, setError] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
+  const [user, setUser] = useState<any>(null);
+  const [bookmarkedIds, setBookmarkedIds] = useState<string[]>([]);
+
+  useEffect(() => {
+    const loadUserAndProfile = async () => {
+      const userData = authStorage.getUser();
+      setUser(userData);
+      
+      if (userData && userData.role === 'student') {
+        try {
+          const token = authStorage.getToken();
+          const res = await fetch('/api/users/profile', {
+            headers: { 'Authorization': `Bearer ${token}` }
+          });
+          if (res.ok) {
+            const data = await res.json();
+            if (data.bookmarks) {
+              const pubBookmarks = data.bookmarks
+                .filter((b: any) => b.itemType === 'publication')
+                .map((b: any) => b.itemId);
+              setBookmarkedIds(pubBookmarks);
+            }
+          }
+        } catch (e) {
+          console.error('Failed to load profile details in Publications page', e);
+        }
+      }
+    };
+    loadUserAndProfile();
+  }, []);
+
+  const handleToggleBookmark = async (pubId: string) => {
+    if (!user) {
+      window.location.href = '/login';
+      return;
+    }
+    
+    try {
+      const token = authStorage.getToken();
+      const res = await fetch('/api/users/profile', {
+        method: 'PUT',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          action: 'toggleBookmark',
+          itemId: pubId,
+          itemType: 'publication'
+        })
+      });
+      
+      if (res.ok) {
+        if (bookmarkedIds.includes(pubId)) {
+          setBookmarkedIds(bookmarkedIds.filter(id => id !== pubId));
+        } else {
+          setBookmarkedIds([...bookmarkedIds, pubId]);
+        }
+      }
+    } catch (err) {
+      console.error('Failed to toggle publication bookmark', err);
+    }
+  };
 
   useEffect(() => {
     const controller = new AbortController();
@@ -170,7 +234,13 @@ export default function PublicationsPage() {
           {filteredPublications.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {filteredPublications.map((publication) => (
-                <PublicationCard key={publication._id} publication={publication} />
+                <PublicationCard 
+                  key={publication._id} 
+                  publication={publication} 
+                  isStudent={user && user.role === 'student'}
+                  isBookmarked={bookmarkedIds.includes(publication._id)}
+                  onToggleBookmark={handleToggleBookmark}
+                />
               ))}
             </div>
           ) : (

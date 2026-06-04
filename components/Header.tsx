@@ -33,7 +33,7 @@ const Header = () => {
     { name: 'Contact', href: '/contact' },
   ];
 
-  if (user && user.role === 'admin') {
+  if (user && ['admin', 'moderator', 'editor'].includes(user.role)) {
     navigation.push({ name: 'Dashboard', href: '/admin' });
   }
 
@@ -131,7 +131,7 @@ function AuthActions() {
       </button>
       {menuOpen && (
         <div className="absolute right-0 mt-10 w-44 bg-white shadow-lg rounded-md py-1 z-50">
-          {user.role === 'admin' && (
+          {['admin', 'moderator', 'editor'].includes(user.role) && (
             <Link href="/admin" className="block px-4 py-2 text-sm text-primary-600 hover:bg-gray-50 border-b border-gray-100 font-semibold">
               Dashboard
             </Link>
@@ -180,7 +180,7 @@ function MobileMenu({ navigation, onClose }: any) {
             </>
           ) : (
             <>
-              {user.role === 'admin' && (
+              {['admin', 'moderator', 'editor'].includes(user.role) && (
                 <Link href="/admin" className="block px-4 py-2.5 text-primary-600 hover:bg-gray-100 rounded-md font-semibold" onClick={onClose}>
                   Dashboard
                 </Link>

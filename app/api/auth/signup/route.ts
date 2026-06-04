@@ -6,7 +6,7 @@ import jwt from 'jsonwebtoken';
 const JWT_SECRET = process.env.JWT_SECRET;
 const ADMIN_SIGNUP_SECRET = process.env.ADMIN_SIGNUP_SECRET;
 
-const ALLOWED_ROLES = ['admin', 'moderator', 'editor'];
+const ALLOWED_ROLES = ['admin', 'moderator', 'editor', 'student'];
 
 export async function POST(request: NextRequest) {
   try {
@@ -19,9 +19,9 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ message: 'Username, email and password are required' }, { status: 400 });
     }
 
-    // Determine role (default to 'editor') and validate
-    let assignedRole = (role && String(role).toLowerCase()) || 'editor';
-    if (!ALLOWED_ROLES.includes(assignedRole)) assignedRole = 'editor';
+    // Determine role (default to 'student') and validate
+    let assignedRole = (role && String(role).toLowerCase()) || 'student';
+    if (!ALLOWED_ROLES.includes(assignedRole)) assignedRole = 'student';
 
     // Protect admin creation via secret (if ADMIN_SIGNUP_SECRET is configured)
     if (assignedRole === 'admin') {

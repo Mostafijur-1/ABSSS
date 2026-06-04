@@ -1,14 +1,22 @@
 "use client";
 
-import { Calendar, Users, FileText, ExternalLink, ArrowRight } from 'lucide-react';
+import { Calendar, Users, FileText, ExternalLink, ArrowRight, Bookmark } from 'lucide-react';
 import { Publication } from '@/lib/api';
 import Link from 'next/link';
 
 interface PublicationCardProps {
   publication: Publication;
+  isStudent?: boolean;
+  isBookmarked?: boolean;
+  onToggleBookmark?: (id: string) => void;
 }
 
-const PublicationCard = ({ publication }: PublicationCardProps) => {
+const PublicationCard = ({ 
+  publication,
+  isStudent = false,
+  isBookmarked = false,
+  onToggleBookmark
+}: PublicationCardProps) => {
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     return date.toLocaleDateString('en-US', {
@@ -28,12 +36,27 @@ const PublicationCard = ({ publication }: PublicationCardProps) => {
   };
 
   return (
-    <div className="card p-6 hover:shadow-lg transition-shadow h-full flex flex-col group">
+    <div className="card p-6 hover:shadow-lg transition-shadow h-full flex flex-col group relative">
       <div className="flex items-center justify-between mb-4 gap-3 flex-wrap">
-        <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-bold badge ${getCategoryColor(publication.category)}`}>
-          <FileText className="w-3 h-3 mr-1.5" />
-          {publication.category.replace('-', ' ').charAt(0).toUpperCase() + publication.category.slice(1).replace('-', ' ')}
-        </span>
+        <div className="flex items-center gap-2">
+          {isStudent && (
+            <button
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                onToggleBookmark?.(publication._id);
+              }}
+              className="text-gray-400 hover:text-primary-600 transition-colors p-1.5 bg-gray-50 hover:bg-primary-50 rounded-lg z-10"
+              title={isBookmarked ? "Remove Bookmark" : "Bookmark Publication"}
+            >
+              <Bookmark className={`w-3.5 h-3.5 ${isBookmarked ? 'fill-current text-primary-600' : 'text-gray-400'}`} />
+            </button>
+          )}
+          <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-bold badge ${getCategoryColor(publication.category)}`}>
+            <FileText className="w-3 h-3 mr-1.5" />
+            {publication.category.replace('-', ' ').charAt(0).toUpperCase() + publication.category.slice(1).replace('-', ' ')}
+          </span>
+        </div>
         <span className="text-xs text-gray-500 font-medium bg-gray-100 px-2.5 py-1 rounded-full">
           {publication.journal}
         </span>

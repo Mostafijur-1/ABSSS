@@ -69,7 +69,7 @@ export interface User {
   _id: string;
   username: string;
   email: string;
-  role: 'admin' | 'moderator' | 'editor';
+  role: 'admin' | 'moderator' | 'editor' | 'student';
   permissions: string[];
   isActive: boolean;
   lastLogin?: string | null;
@@ -107,7 +107,7 @@ type UserInput = {
   username: string;
   email: string;
   password?: string;
-  role: 'admin' | 'moderator' | 'editor';
+  role: 'admin' | 'moderator' | 'editor' | 'student';
   permissions: string[];
   isActive: boolean;
 };

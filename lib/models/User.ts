@@ -23,8 +23,8 @@ const userSchema = new mongoose.Schema({
   },
   role: {
     type: String,
-    enum: ['admin', 'moderator', 'editor'],
-    default: 'editor'
+    enum: ['admin', 'moderator', 'editor', 'student'],
+    default: 'student'
   },
   permissions: [{
     type: String,
@@ -37,7 +37,18 @@ const userSchema = new mongoose.Schema({
   lastLogin: {
     type: Date,
     default: null
-  }
+  },
+  bookmarks: [{
+    itemType: { type: String, enum: ['course', 'blog', 'publication', 'event'] },
+    itemId: { type: String }
+  }],
+  registeredEvents: [{
+    type: String
+  }],
+  activities: [{
+    description: { type: String },
+    createdAt: { type: Date, default: Date.now }
+  }]
 }, {
   timestamps: true
 });

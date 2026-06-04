@@ -1,16 +1,82 @@
 "use client";
 
 import React, { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { coursesApi, Course } from '@/lib/api';
-import { BookOpen, Calendar, Clock, User, Search, Award, Sparkles } from 'lucide-react';
+import { BookOpen, Calendar, Clock, User, Search, Award, Sparkles, Bookmark } from 'lucide-react';
+import { authStorage } from '@/lib/clientAuth';
 
 export default function CoursesPage() {
+  const router = useRouter();
   const [courses, setCourses] = useState<Course[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [activeTab, setActiveTab] = useState<'all' | 'upcoming' | 'completed' | 'ongoing'>('all');
+  const [user, setUser] = useState<any>(null);
+  const [bookmarkedIds, setBookmarkedIds] = useState<string[]>([]);
+
+  useEffect(() => {
+    const loadUser = async () => {
+      const userData = authStorage.getUser();
+      setUser(userData);
+      
+      if (userData && userData.role === 'student') {
+        try {
+          const token = authStorage.getToken();
+          const res = await fetch('/api/users/profile', {
+            headers: { 'Authorization': `Bearer ${token}` }
+          });
+          if (res.ok) {
+            const data = await res.json();
+            if (data.bookmarks) {
+              const courseBookmarks = data.bookmarks
+                .filter((b: any) => b.itemType === 'course')
+                .map((b: any) => b.itemId);
+              setBookmarkedIds(courseBookmarks);
+            }
+          }
+        } catch (e) {
+          console.error('Failed to load bookmarks', e);
+        }
+      }
+    };
+    loadUser();
+  }, []);
+
+  const handleToggleBookmark = async (courseId: string) => {
+    if (!user) {
+      router.push('/login');
+      return;
+    }
+    
+    try {
+      const token = authStorage.getToken();
+      const res = await fetch('/api/users/profile', {
+        method: 'PUT',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          action: 'toggleBookmark',
+          itemId: courseId,
+          itemType: 'course'
+        })
+      });
+      
+      if (res.ok) {
+        if (bookmarkedIds.includes(courseId)) {
+          setBookmarkedIds(bookmarkedIds.filter(id => id !== courseId));
+        } else {
+          setBookmarkedIds([...bookmarkedIds, courseId]);
+        }
+      }
+    } catch (err) {
+      console.error('Failed to toggle bookmark', err);
+    }
+  };
 
   useEffect(() => {
     const fetchCourses = async () => {
@@ -142,6 +208,19 @@ export default function CoursesPage() {
                     <span className={`absolute top-4 right-4 inline-flex items-center px-3 py-1 rounded-full text-xs font-bold border ${getStatusColor(course.status)}`}>
                       {course.status.toUpperCase()}
                     </span>
+                    {/* Bookmark Button */}
+                    {user && user.role === 'student' && (
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleToggleBookmark(course._id);
+                        }}
+                        className="absolute top-4 left-4 p-2 bg-white/80 hover:bg-white text-primary-600 rounded-full shadow-md backdrop-blur-sm transition-all duration-200 z-10"
+                        title={bookmarkedIds.includes(course._id) ? "Remove Bookmark" : "Bookmark Course"}
+                      >
+                        <Bookmark className={`w-4 h-4 ${bookmarkedIds.includes(course._id) ? 'fill-current text-primary-600' : 'text-gray-400'}`} />
+                      </button>
+                    )}
                   </div>
 
                   <div className="p-6 flex-1 flex flex-col">

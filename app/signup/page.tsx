@@ -37,7 +37,7 @@ export default function SignupPage() {
         authStorage.setToken(data.token);
         authStorage.setUser(data.user);
         const role = data.user?.role;
-        const redirect = role === 'admin' || role === 'moderator' ? '/admin' : '/profile';
+        const redirect = ['admin', 'moderator', 'editor'].includes(role) ? '/admin' : '/profile';
         router.push(redirect);
         return;
       }

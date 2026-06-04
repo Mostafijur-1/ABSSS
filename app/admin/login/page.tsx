@@ -18,7 +18,11 @@ export default function AdminLogin() {
     const token = authStorage.getToken();
     const user = authStorage.getUser();
     if (token && user) {
-      router.push('/admin');
+      if (['admin', 'moderator', 'editor'].includes(user.role)) {
+        router.push('/admin');
+      } else {
+        router.push('/profile');
+      }
     }
   }, [router]);
 
@@ -29,9 +33,13 @@ export default function AdminLogin() {
 
     try {
       const response = await authApi.login(credentials);
-      authStorage.setToken(response.token);
-      authStorage.setUser(response.user);
-      router.push('/admin');
+      if (response.user && ['admin', 'moderator', 'editor'].includes(response.user.role)) {
+        authStorage.setToken(response.token);
+        authStorage.setUser(response.user);
+        router.push('/admin');
+      } else {
+        setError('Access denied: Unauthorized role.');
+      }
     } catch (err: any) {
       setError(err.message || 'Login failed');
     } finally {

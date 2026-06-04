@@ -1,12 +1,24 @@
-import { Calendar, MapPin, Tag, ArrowRight } from 'lucide-react';
+import { Calendar, MapPin, Tag, ArrowRight, Bookmark } from 'lucide-react';
 import { Event } from '@/lib/api';
 import Link from 'next/link';
 
 interface EventCardProps {
   event: Event;
+  isStudent?: boolean;
+  isBookmarked?: boolean;
+  isRegistered?: boolean;
+  onToggleBookmark?: (id: string) => void;
+  onToggleRSVP?: (id: string) => void;
 }
 
-const EventCard = ({ event }: EventCardProps) => {
+const EventCard = ({ 
+  event,
+  isStudent = false,
+  isBookmarked = false,
+  isRegistered = false,
+  onToggleBookmark,
+  onToggleRSVP
+}: EventCardProps) => {
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     return date.toLocaleDateString('en-US', {
@@ -29,7 +41,21 @@ const EventCard = ({ event }: EventCardProps) => {
   };
 
   return (
-    <div className="card overflow-hidden group h-full flex flex-col">
+    <div className="card overflow-hidden group h-full flex flex-col relative">
+      {isStudent && (
+        <button
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            onToggleBookmark?.(event._id);
+          }}
+          className="absolute top-4 left-4 p-2 bg-white/80 hover:bg-white text-primary-600 rounded-full shadow-md backdrop-blur-sm transition-all duration-200 z-10"
+          title={isBookmarked ? "Remove Bookmark" : "Bookmark Event"}
+        >
+          <Bookmark className={`w-4 h-4 ${isBookmarked ? 'fill-current text-primary-600' : 'text-gray-400'}`} />
+        </button>
+      )}
+
       {event.image && (
         <div className="aspect-video overflow-hidden bg-gradient-to-br from-gray-200 to-gray-300">
           <img
@@ -73,10 +99,24 @@ const EventCard = ({ event }: EventCardProps) => {
           </div>
         </div>
 
-        <Link href={`/events/${event._id || ''}`} className="btn-primary w-full mt-5 text-sm justify-center">
-          Learn More
-          <ArrowRight className="w-4 h-4" />
-        </Link>
+        <div className="flex gap-2 mt-5">
+          <Link href={`/events/${event._id || ''}`} className="btn-primary flex-1 text-sm justify-center">
+            Learn More
+            <ArrowRight className="w-4 h-4" />
+          </Link>
+          {isStudent && (
+            <button
+              onClick={() => onToggleRSVP?.(event._id)}
+              className={`px-4 py-2 text-sm font-bold rounded-xl border flex-1 transition-all flex items-center justify-center ${
+                isRegistered
+                  ? 'bg-green-50 text-green-700 border-green-200 hover:bg-green-100'
+                  : 'bg-primary-50 text-primary-700 border-primary-100 hover:bg-primary-100'
+              }`}
+            >
+              {isRegistered ? "RSVP'd ✓" : 'Register/RSVP'}
+            </button>
+          )}
+        </div>
       </div>
     </div>
   );

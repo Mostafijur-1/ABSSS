@@ -70,18 +70,18 @@ const Footer = () => {
             <div className="space-y-4">
               <div className="flex items-start space-x-3 group">
                 <MapPin className="h-5 w-5 text-primary-400 mt-0.5 flex-shrink-0 group-hover:scale-110 transition-transform" />
-                <span className="text-gray-300 leading-relaxed text-sm">University Campus, Science Building</span>
+                <span className="text-gray-300 leading-relaxed text-sm">University Campus</span>
               </div>
               <div className="flex items-center space-x-3 group">
                 <Mail className="h-5 w-5 text-primary-400 flex-shrink-0 group-hover:scale-110 transition-transform" />
-                <a href="mailto:info@absss.edu" className="text-gray-300 hover:text-primary-400 transition-colors font-medium text-sm">
-                  info@absss.edu
+                <a href="mailto:absssiut@gmail.com" className="text-gray-300 hover:text-primary-400 transition-colors font-medium text-sm">
+                  absssiut@gmail.com
                 </a>
               </div>
               <div className="flex items-center space-x-3 group">
                 <Phone className="h-5 w-5 text-primary-400 flex-shrink-0 group-hover:scale-110 transition-transform" />
-                <a href="tel:+1234567890" className="text-gray-300 hover:text-primary-400 transition-colors font-medium text-sm">
-                  +1 (234) 567-890
+                <a href="tel:+8801633939262" className="text-gray-300 hover:text-primary-400 transition-colors font-medium text-sm">
+                  +88 01633939262
                 </a>
               </div>
             </div>
@@ -91,12 +91,16 @@ const Footer = () => {
         {/* Divider */}
         <div className="h-px bg-gradient-to-r from-transparent via-primary-600/30 to-transparent mb-8"></div>
 
-        {/* Bottom Bar */}
-        <div className="flex flex-col md:flex-row items-center justify-between">
-          <p className="text-gray-400 text-sm">
-            &copy; {currentYear} Al Biruni Society of Scientific Studies. All rights reserved.
-          </p>
-          <div className="flex space-x-6 mt-4 md:mt-0">
+        <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+          <div className="text-center md:text-left">
+            <p className="text-gray-400 text-sm">
+              &copy; {currentYear} Al Biruni Society of Scientific Studies. All rights reserved.
+            </p>
+            <p className="text-xs text-gray-500 mt-1">
+              Developed by <a href="https://github.com/Mostafijur-1" target="_blank" rel="noopener noreferrer" className="text-primary-400 font-semibold hover:underline">Mostafij CSE'21 IUT</a>
+            </p>
+          </div>
+          <div className="flex space-x-6">
             <Link href="#" className="text-gray-400 hover:text-primary-400 transition-colors text-sm font-medium">
               Privacy Policy
             </Link>
