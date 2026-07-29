@@ -5,7 +5,7 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import MemberCard from '@/components/MemberCard';
 import { membersApi } from '@/lib/api';
-import { Users, Filter } from 'lucide-react';
+import { Users, GraduationCap, BookOpen, Handshake } from 'lucide-react';
 import Link from 'next/link';
 
 export default function MembersPage() {
@@ -36,7 +36,7 @@ export default function MembersPage() {
       {/* Hero Section */}
       <section className="bg-gradient-to-br from-primary-600 to-primary-800 text-white">
         <div className="container-max section-padding text-center">
-          <h1 className="text-5xl font-bold mb-6">Our Members</h1>
+          <h1 className="mb-5 text-4xl font-bold sm:text-5xl">Our Members</h1>
           <p className="text-xl text-primary-100 max-w-3xl mx-auto">
             Meet our diverse community of faculty advisors, researchers, students, and alumni 
             who contribute to advancing scientific knowledge and innovation.
@@ -75,7 +75,7 @@ export default function MembersPage() {
       <section className="section-padding bg-gray-50">
         <div className="container-max">
           <div className="flex items-center mb-8">
-            <Filter className="w-8 h-8 text-primary-600 mr-3" />
+            <GraduationCap className="w-8 h-8 text-primary-600 mr-3" />
             <h2 className="text-3xl font-bold text-gray-900">Student Members</h2>
           </div>
           {loading ? (
@@ -88,7 +88,7 @@ export default function MembersPage() {
             </div>
           ) : (
             <div className="text-center py-12">
-              <Filter className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+              <GraduationCap className="w-16 h-16 text-gray-400 mx-auto mb-4" />
               <h3 className="text-xl font-semibold text-gray-900 mb-2">No Student Members</h3>
               <p className="text-gray-600">
                 Student member profiles will appear here.
@@ -165,7 +165,7 @@ export default function MembersPage() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="card p-6 text-center">
               <div className="bg-primary-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-2xl">🎓</span>
+                <GraduationCap className="h-8 w-8 text-primary-700" aria-hidden="true" />
               </div>
               <h3 className="text-lg font-semibold text-gray-900 mb-2">For Students</h3>
               <p className="text-gray-600 text-sm mb-4">
@@ -177,7 +177,7 @@ export default function MembersPage() {
             </div>
             <div className="card p-6 text-center">
               <div className="bg-primary-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-2xl">👨‍🏫</span>
+                <BookOpen className="h-8 w-8 text-primary-700" aria-hidden="true" />
               </div>
               <h3 className="text-lg font-semibold text-gray-900 mb-2">For Faculty</h3>
               <p className="text-gray-600 text-sm mb-4">
@@ -189,7 +189,7 @@ export default function MembersPage() {
             </div>
             <div className="card p-6 text-center">
               <div className="bg-primary-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-2xl">🤝</span>
+                <Handshake className="h-8 w-8 text-primary-700" aria-hidden="true" />
               </div>
               <h3 className="text-lg font-semibold text-gray-900 mb-2">Collaborations</h3>
               <p className="text-gray-600 text-sm mb-4">

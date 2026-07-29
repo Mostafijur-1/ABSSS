@@ -53,6 +53,5 @@ const memberSchema = new mongoose.Schema({
 memberSchema.index({ role: 1 });
 memberSchema.index({ department: 1 });
 memberSchema.index({ isActive: 1 });
-memberSchema.index({ email: 1 });
 
 export default mongoose.models.Member || mongoose.model('Member', memberSchema);

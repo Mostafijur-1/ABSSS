@@ -44,10 +44,10 @@ export default function ContactPage() {
       <Header />
       
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-primary-600 to-primary-800 text-white">
+      <section className="bg-gradient-to-br from-primary-700 to-primary-900 text-white">
         <div className="container-max section-padding text-center">
-          <h1 className="text-5xl font-bold mb-6">Contact Us</h1>
-          <p className="text-xl text-primary-100 max-w-3xl mx-auto">
+          <h1 className="mb-5 text-4xl font-bold text-white sm:text-5xl">Contact Us</h1>
+          <p className="mx-auto max-w-3xl text-lg leading-relaxed text-primary-100 sm:text-xl">
             Get in touch with us for any questions, collaborations, or to join our scientific society. 
             We'd love to hear from you!
           </p>
@@ -60,10 +60,10 @@ export default function ContactPage() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
             {/* Contact Form */}
             <div>
-              <h2 className="text-3xl font-bold text-gray-900 mb-6">Send us a Message</h2>
+              <h2 className="mb-6 text-3xl font-bold text-slate-950">Send us a message</h2>
               
               {submitStatus === 'success' && (
-                <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-6">
+                <div className="mb-6 rounded-xl border border-green-200 bg-green-50 p-4" role="status" aria-live="polite">
                   <div className="flex items-center">
                     <CheckCircle className="w-5 h-5 text-green-600 mr-2" />
                     <span className="text-green-800">Message sent successfully! We'll get back to you soon.</span>
@@ -72,7 +72,7 @@ export default function ContactPage() {
               )}
 
               {submitStatus === 'error' && (
-                <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
+                <div className="mb-6 rounded-xl border border-red-200 bg-red-50 p-4" role="alert">
                   <span className="text-red-800">Failed to send message. Please try again.</span>
                 </div>
               )}
@@ -80,7 +80,7 @@ export default function ContactPage() {
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
-                    <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
+                    <label htmlFor="name" className="form-label">
                       Full Name *
                     </label>
                     <input
@@ -90,13 +90,14 @@ export default function ContactPage() {
                       value={formData.name}
                       onChange={handleChange}
                       required
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                      autoComplete="name"
+                      className="form-input"
                       placeholder="Your full name"
                     />
                   </div>
 
                   <div>
-                    <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+                    <label htmlFor="email" className="form-label">
                       Email Address *
                     </label>
                     <input
@@ -106,14 +107,15 @@ export default function ContactPage() {
                       value={formData.email}
                       onChange={handleChange}
                       required
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                      autoComplete="email"
+                      className="form-input"
                       placeholder="your.email@example.com"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label htmlFor="subject" className="block text-sm font-medium text-gray-700 mb-2">
+                  <label htmlFor="subject" className="form-label">
                     Subject
                   </label>
                   <input
@@ -122,13 +124,13 @@ export default function ContactPage() {
                     name="subject"
                     value={formData.subject}
                     onChange={handleChange}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                    className="form-input"
                     placeholder="What is this about?"
                   />
                 </div>
 
                 <div>
-                  <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-2">
+                  <label htmlFor="message" className="form-label">
                     Message *
                   </label>
                   <textarea
@@ -138,7 +140,7 @@ export default function ContactPage() {
                     onChange={handleChange}
                     required
                     rows={6}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                    className="form-input min-h-40 resize-y"
                     placeholder="Tell us more about your inquiry..."
                   />
                 </div>
@@ -146,11 +148,12 @@ export default function ContactPage() {
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="btn-primary w-full flex items-center justify-center"
+                  className="btn-primary w-full"
+                  aria-busy={isSubmitting}
                 >
                   {isSubmitting ? (
                     <>
-                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                      <div className="h-4 w-4 animate-spin rounded-full border-2 border-white/40 border-t-white" aria-hidden="true"></div>
                       Sending...
                     </>
                   ) : (
@@ -165,7 +168,7 @@ export default function ContactPage() {
 
             {/* Contact Information */}
             <div>
-              <h2 className="text-3xl font-bold text-gray-900 mb-6">Get in Touch</h2>
+              <h2 className="mb-6 text-3xl font-bold text-slate-950">Get in touch</h2>
               
               <div className="space-y-8">
                 <div className="flex items-start">
@@ -175,9 +178,8 @@ export default function ContactPage() {
                   <div>
                     <h3 className="text-lg font-semibold text-gray-900 mb-2">Visit Us</h3>
                     <p className="text-gray-600">
-                      University Campus<br />
-                      Science Building, Room 205<br />
-                      City, State 12345
+                      Islamic University of Technology<br />
+                      Gazipur, Bangladesh
                     </p>
                   </div>
                 </div>
@@ -189,13 +191,8 @@ export default function ContactPage() {
                   <div>
                     <h3 className="text-lg font-semibold text-gray-900 mb-2">Email Us</h3>
                     <p className="text-gray-600">
-                      <a href="mailto:info@absss.edu" className="text-primary-600 hover:text-primary-700">
-                        info@absss.edu
-                      </a>
-                    </p>
-                    <p className="text-gray-600">
-                      <a href="mailto:president@absss.edu" className="text-primary-600 hover:text-primary-700">
-                        president@absss.edu
+                      <a href="mailto:absssiut@gmail.com" className="font-semibold text-primary-700 hover:text-primary-800">
+                        absssiut@gmail.com
                       </a>
                     </p>
                   </div>
@@ -208,31 +205,20 @@ export default function ContactPage() {
                   <div>
                     <h3 className="text-lg font-semibold text-gray-900 mb-2">Call Us</h3>
                     <p className="text-gray-600">
-                      <a href="tel:+1234567890" className="text-primary-600 hover:text-primary-700">
-                        +1 (234) 567-890
+                      <a href="tel:+8801633939262" className="font-semibold text-primary-700 hover:text-primary-800">
+                        +880 1633-939262
                       </a>
                     </p>
                   </div>
                 </div>
               </div>
 
-              {/* Office Hours */}
-              <div className="mt-8 p-6 bg-gray-50 rounded-lg">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">Office Hours</h3>
-                <div className="space-y-2 text-gray-600">
-                  <div className="flex justify-between">
-                    <span>Monday - Friday</span>
-                    <span>9:00 AM - 5:00 PM</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>Saturday</span>
-                    <span>10:00 AM - 2:00 PM</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>Sunday</span>
-                    <span>Closed</span>
-                  </div>
-                </div>
+              <div className="mt-8 rounded-2xl border border-primary-100 bg-primary-50 p-6">
+                <h3 className="mb-2 text-lg font-bold text-primary-950">What happens next?</h3>
+                <p className="leading-relaxed text-primary-900/80">
+                  Share a few details about your question, research idea, or collaboration.
+                  A member of the ABSSS team will reply by email as soon as possible.
+                </p>
               </div>
             </div>
           </div>
@@ -288,4 +274,4 @@ export default function ContactPage() {
       <Footer />
     </div>
   );
-} 
+}

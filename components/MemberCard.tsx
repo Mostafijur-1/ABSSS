@@ -1,4 +1,4 @@
-import { Mail, Building, User } from 'lucide-react';
+import { Mail, Building, User, GraduationCap, BookOpen, UsersRound } from 'lucide-react';
 import { Member } from '@/lib/api';
 
 interface MemberCardProps {
@@ -18,27 +18,29 @@ const MemberCard = ({ member }: MemberCardProps) => {
   const getRoleIcon = (role: string) => {
     switch (role) {
       case 'faculty':
-        return '👨‍🏫';
+        return <BookOpen className="h-10 w-10 text-primary-700" aria-hidden="true" />;
       case 'student':
-        return '👨‍🎓';
+        return <GraduationCap className="h-10 w-10 text-primary-700" aria-hidden="true" />;
       case 'alumni':
-        return '🎓';
+        return <UsersRound className="h-10 w-10 text-primary-700" aria-hidden="true" />;
       default:
-        return '👤';
+        return <User className="h-10 w-10 text-primary-700" aria-hidden="true" />;
     }
   };
 
   return (
-    <div className="card p-6 text-center">
+    <article className="card p-6 text-center">
       <div className="mb-4">
         {(member.image || member.imageUrl) ? (
           <img
             src={member.image || member.imageUrl}
             alt={member.name}
+            loading="lazy"
+            decoding="async"
             className="w-24 h-24 rounded-full mx-auto object-cover border-4 border-gray-200"
           />
         ) : (
-          <div className="w-24 h-24 rounded-full mx-auto bg-gray-200 flex items-center justify-center text-2xl">
+          <div className="mx-auto flex h-24 w-24 items-center justify-center rounded-full bg-primary-50">
             {getRoleIcon(member.role)}
           </div>
         )}
@@ -81,8 +83,8 @@ const MemberCard = ({ member }: MemberCardProps) => {
           Contact
         </a>
       </div>
-    </div>
+    </article>
   );
 };
 
-export default MemberCard; 
+export default MemberCard;

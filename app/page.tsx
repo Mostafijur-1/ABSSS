@@ -116,7 +116,7 @@ export default async function HomePage() {
               </p>
               
               <div className="flex flex-col sm:flex-row gap-4">
-                <Link href="/about" className="btn-primary group">
+                <Link href="/about" className="btn-on-dark group">
                   Explore Our Mission
                   <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                 </Link>
@@ -126,7 +126,7 @@ export default async function HomePage() {
               </div>
 
               {/* Quick Stats */}
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-12">
+              <div className="mt-12 grid grid-cols-3 gap-4">
                 <div>
                   <div className="text-2xl font-bold text-primary-200">50+</div>
                   <div className="text-sm text-primary-300">Active Members</div>
@@ -237,13 +237,23 @@ export default async function HomePage() {
             </Link>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {upcomingEvents.slice(0, 3).map((event, i) => (
-              <div key={event._id} className="animate-slide-up">
-                <EventCard event={event} />
-              </div>
-            ))}
-          </div>
+          {upcomingEvents.length > 0 ? (
+            <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
+              {upcomingEvents.slice(0, 3).map((event) => (
+                <div key={event._id} className="animate-slide-up">
+                  <EventCard event={event} />
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="empty-state">
+              <Calendar className="mx-auto h-10 w-10 text-primary-600" />
+              <h3 className="mt-4 text-lg font-bold text-slate-950">New events are being planned</h3>
+              <p className="mx-auto mt-2 max-w-lg text-slate-600">
+                Explore the events page for the latest workshops, seminars, and scientific gatherings.
+              </p>
+            </div>
+          )}
         </div>
       </section>
 
@@ -269,13 +279,23 @@ export default async function HomePage() {
             </Link>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {recentPublications.slice(0, 3).map((publication, i) => (
-              <div key={publication._id} className="animate-slide-up">
-                <PublicationCard publication={publication} />
-              </div>
-            ))}
-          </div>
+          {recentPublications.length > 0 ? (
+            <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
+              {recentPublications.slice(0, 3).map((publication) => (
+                <div key={publication._id} className="animate-slide-up">
+                  <PublicationCard publication={publication} />
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="empty-state">
+              <BookOpen className="mx-auto h-10 w-10 text-primary-600" />
+              <h3 className="mt-4 text-lg font-bold text-slate-950">Publications will appear here</h3>
+              <p className="mx-auto mt-2 max-w-lg text-slate-600">
+                Visit the publications library to browse research as it becomes available.
+              </p>
+            </div>
+          )}
         </div>
       </section>
 
@@ -304,6 +324,8 @@ export default async function HomePage() {
                       <img
                         src={activity.image}
                         alt={activity.title}
+                        loading="lazy"
+                        decoding="async"
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                       />
                       {activity.category && (
@@ -370,7 +392,7 @@ export default async function HomePage() {
             <Link href="/contact" className="btn-secondary">
               Get In Touch
             </Link>
-            <Link href="/members" className="btn-primary group">
+            <Link href="/members" className="btn-on-dark group">
               Meet Our Team
               <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
             </Link>

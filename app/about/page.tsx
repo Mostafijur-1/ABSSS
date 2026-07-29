@@ -19,7 +19,7 @@ export default function AboutPage() {
               <Sparkles className="h-4 w-4 text-primary-200" />
               <span className="text-sm text-primary-100 font-medium">Our Story</span>
             </div>
-            <h1 className="text-6xl font-bold mb-6 leading-tight">About ABSSS</h1>
+            <h1 className="mb-6 text-4xl font-bold leading-tight sm:text-5xl lg:text-6xl">About ABSSS</h1>
             <p className="text-xl text-primary-100 max-w-3xl mx-auto leading-relaxed">
               Al Biruni Society of Scientific Studies is a university-based organization dedicated to advancing scientific research, fostering collaboration, and inspiring the next generation of innovators.
             </p>
@@ -204,4 +204,4 @@ export default function AboutPage() {
       <Footer />
     </div>
   );
-} 
+}

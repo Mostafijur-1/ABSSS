@@ -1,17 +1,32 @@
 import type { Metadata, Viewport } from 'next'
 import './globals.css'
-import PageTransition from '@/components/PageTransition'
 
 export const metadata: Metadata = {
-  title: 'ABSSS - Al Biruni Society of Scientific Studies',
+  title: {
+    default: 'ABSSS | Al Biruni Society of Scientific Studies',
+    template: '%s | ABSSS',
+  },
   description: 'University-based scientific society promoting research, innovation, and scientific collaboration.',
   keywords: 'scientific society, university, research, innovation, ABSSS, Al Biruni',
   authors: [{ name: 'ABSSS Team' }],
+  applicationName: 'ABSSS',
+  category: 'education',
+  openGraph: {
+    title: 'ABSSS | Al Biruni Society of Scientific Studies',
+    description: 'A community advancing scientific research, innovation, and collaboration.',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary',
+    title: 'ABSSS | Al Biruni Society of Scientific Studies',
+    description: 'A community advancing scientific research, innovation, and collaboration.',
+  },
 }
 
 export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
+  themeColor: '#15265c',
 }
 
 export default function RootLayout({
@@ -21,11 +36,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className="min-h-screen bg-gray-50">
-        <PageTransition>
-          {children}
-        </PageTransition>
-      </body>
+      <body className="min-h-screen">{children}</body>
     </html>
   )
 }

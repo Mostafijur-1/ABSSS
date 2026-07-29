@@ -109,7 +109,7 @@ export default function BlogsPage() {
         <section className="bg-gradient-to-r from-primary-600 to-primary-800 text-white py-16">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center">
-              <h1 className="text-4xl md:text-5xl font-bold mb-4">
+              <h1 className="mb-4 text-4xl font-bold md:text-5xl">
                 Blog & Articles
               </h1>
               <p className="text-xl text-primary-100 max-w-3xl mx-auto">
@@ -130,6 +130,7 @@ export default function BlogsPage() {
                 </div>
                 <input
                   type="text"
+                  aria-label="Search blog articles"
                   placeholder="Search blogs..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
@@ -143,6 +144,7 @@ export default function BlogsPage() {
                   <button
                     key={category.value}
                     onClick={() => setSelectedCategory(category.value)}
+                    aria-pressed={selectedCategory === category.value}
                     className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
                       selectedCategory === category.value
                         ? 'bg-primary-600 text-white'
@@ -177,14 +179,25 @@ export default function BlogsPage() {
                 {filteredBlogs.map((blog) => (
                   <article
                     key={blog._id}
-                    className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow cursor-pointer"
+                    className="card cursor-pointer"
                     onClick={() => handleBlogClick(blog._id)}
+                    onKeyDown={(event) => {
+                      if (event.key === 'Enter' || event.key === ' ') {
+                        event.preventDefault();
+                        handleBlogClick(blog._id);
+                      }
+                    }}
+                    role="link"
+                    tabIndex={0}
+                    aria-label={`Read ${blog.title}`}
                   >
                     {blog.imageUrl && (
                       <div className="aspect-w-16 aspect-h-9">
                         <img
                           src={blog.imageUrl}
                           alt={blog.title}
+                          loading="lazy"
+                          decoding="async"
                           className="w-full h-48 object-cover"
                         />
                       </div>

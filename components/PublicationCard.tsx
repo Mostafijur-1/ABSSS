@@ -36,7 +36,7 @@ const PublicationCard = ({
   };
 
   return (
-    <div className="card p-6 hover:shadow-lg transition-shadow h-full flex flex-col group relative">
+    <article className="card group relative flex h-full flex-col p-6">
       <div className="flex items-center justify-between mb-4 gap-3 flex-wrap">
         <div className="flex items-center gap-2">
           {isStudent && (
@@ -47,7 +47,8 @@ const PublicationCard = ({
                 onToggleBookmark?.(publication._id);
               }}
               className="text-gray-400 hover:text-primary-600 transition-colors p-1.5 bg-gray-50 hover:bg-primary-50 rounded-lg z-10"
-              title={isBookmarked ? "Remove Bookmark" : "Bookmark Publication"}
+              aria-label={isBookmarked ? `Remove ${publication.title} from bookmarks` : `Bookmark ${publication.title}`}
+              aria-pressed={isBookmarked}
             >
               <Bookmark className={`w-3.5 h-3.5 ${isBookmarked ? 'fill-current text-primary-600' : 'text-gray-400'}`} />
             </button>
@@ -101,7 +102,7 @@ const PublicationCard = ({
                 rel="noopener noreferrer"
                 className="inline-flex items-center px-2.5 py-1 bg-primary-50 text-primary-600 hover:bg-primary-100 font-semibold text-sm rounded-md transition-colors"
                 onClick={(e) => e.stopPropagation()}
-                title="Download PDF"
+                aria-label={`Open PDF for ${publication.title} in a new tab`}
               >
                 <ExternalLink className="w-3.5 h-3.5" />
               </a>
@@ -109,8 +110,8 @@ const PublicationCard = ({
           </div>
         </div>
       </div>
-    </div>
+    </article>
   );
 };
 
-export default PublicationCard; 
+export default PublicationCard;

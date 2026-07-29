@@ -131,7 +131,7 @@ export default function EventsPage() {
       {/* Hero Section */}
       <section className="bg-gradient-to-br from-primary-600 to-primary-800 text-white">
         <div className="container-max section-padding text-center">
-          <h1 className="text-5xl font-bold mb-6">Events</h1>
+          <h1 className="mb-5 text-4xl font-bold sm:text-5xl">Events</h1>
           <p className="text-xl text-primary-100 max-w-3xl mx-auto">
             Join us for exciting scientific events, workshops, conferences, and seminars. 
             Stay updated with the latest developments in research and innovation.
@@ -147,7 +147,7 @@ export default function EventsPage() {
             <h2 className="text-3xl font-bold text-gray-900">All Events</h2>
           </div>
           {loading ? (
-            <div className="text-center py-12">Loading events...</div>
+            <div className="empty-state" role="status" aria-live="polite">Loading events…</div>
           ) : events.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {events.map((event) => (
@@ -163,7 +163,7 @@ export default function EventsPage() {
               ))}
             </div>
           ) : (
-            <div className="text-center py-12">
+            <div className="empty-state">
               <Calendar className="w-16 h-16 text-gray-400 mx-auto mb-4" />
               <h3 className="text-xl font-semibold text-gray-900 mb-2">No Events Found</h3>
               <p className="text-gray-600">

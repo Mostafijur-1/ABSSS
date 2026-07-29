@@ -5,7 +5,7 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import PublicationCard from '@/components/PublicationCard';
 import { Publication } from '@/lib/api';
-import { FileText, Search } from 'lucide-react';
+import { BookOpen, ChartNoAxesCombined, FileText, Microscope, Search } from 'lucide-react';
 import Link from 'next/link';
 import { authStorage } from '@/lib/clientAuth';
 
@@ -151,7 +151,7 @@ export default function PublicationsPage() {
       {/* Hero Section */}
       <section className="bg-gradient-to-br from-primary-600 to-primary-800 text-white">
         <div className="container-max section-padding text-center">
-          <h1 className="text-5xl font-bold mb-6">Publications</h1>
+          <h1 className="mb-5 text-4xl font-bold sm:text-5xl">Publications</h1>
           <p className="text-xl text-primary-100 max-w-3xl mx-auto">
             Explore our collection of research papers, scientific articles, and publications 
             from our members and collaborators.
@@ -181,6 +181,7 @@ export default function PublicationsPage() {
                   <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
                   <input
                     type="text"
+                    aria-label="Search publications"
                     placeholder="Search publications by title, author, abstract, or journal..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
@@ -190,6 +191,7 @@ export default function PublicationsPage() {
               </div>
               <div className="sm:w-48">
                 <select
+                  aria-label="Filter publications by category"
                   value={selectedCategory}
                   onChange={(e) => setSelectedCategory(e.target.value)}
                   className="w-full px-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
@@ -210,6 +212,7 @@ export default function PublicationsPage() {
                     Search: "{searchTerm}"
                     <button
                       onClick={() => setSearchTerm('')}
+                      aria-label="Clear publication search"
                       className="ml-1.5 inline-flex items-center justify-center w-4 h-4 rounded-full text-blue-400 hover:bg-blue-200 hover:text-blue-600"
                     >
                       ×
@@ -221,6 +224,7 @@ export default function PublicationsPage() {
                     Category: {selectedCategory.replace('-', ' ')}
                     <button
                       onClick={() => setSelectedCategory('all')}
+                      aria-label="Clear publication category filter"
                       className="ml-1.5 inline-flex items-center justify-center w-4 h-4 rounded-full text-green-400 hover:bg-green-200 hover:text-green-600"
                     >
                       ×
@@ -261,7 +265,7 @@ export default function PublicationsPage() {
                     setSearchTerm('');
                     setSelectedCategory('all');
                   }}
-                  className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                  className="btn-outline mt-5"
                 >
                   Clear Filters
                 </button>
@@ -284,7 +288,7 @@ export default function PublicationsPage() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="card p-6 text-center">
               <div className="bg-blue-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-2xl">🔬</span>
+                <Microscope className="h-8 w-8 text-blue-700" aria-hidden="true" />
               </div>
               <h3 className="text-lg font-semibold text-gray-900 mb-2">Research Papers</h3>
               <p className="text-gray-600 text-sm">
@@ -294,7 +298,7 @@ export default function PublicationsPage() {
 
             <div className="card p-6 text-center">
               <div className="bg-green-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-2xl">📖</span>
+                <BookOpen className="h-8 w-8 text-green-700" aria-hidden="true" />
               </div>
               <h3 className="text-lg font-semibold text-gray-900 mb-2">Review Articles</h3>
               <p className="text-gray-600 text-sm">
@@ -304,7 +308,7 @@ export default function PublicationsPage() {
 
             <div className="card p-6 text-center">
               <div className="bg-purple-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-2xl">📊</span>
+                <ChartNoAxesCombined className="h-8 w-8 text-purple-700" aria-hidden="true" />
               </div>
               <h3 className="text-lg font-semibold text-gray-900 mb-2">Case Studies</h3>
               <p className="text-gray-600 text-sm">
@@ -377,4 +381,4 @@ export default function PublicationsPage() {
       <Footer />
     </div>
   );
-} 
+}

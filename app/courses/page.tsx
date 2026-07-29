@@ -140,7 +140,7 @@ export default function CoursesPage() {
             <Sparkles className="h-4 w-4 text-primary-200 animate-pulse" />
             <span className="text-sm text-primary-100 font-medium">Academic Enrichment</span>
           </div>
-          <h1 className="text-5xl font-bold mb-6">Scientific & Research Courses</h1>
+          <h1 className="mb-5 text-4xl font-bold sm:text-5xl">Scientific & Research Courses</h1>
           <p className="text-xl text-primary-100 max-w-3xl mx-auto leading-relaxed">
             Enhance your scientific inquiry, methodology, and research capabilities through our specialized courses led by expert mentors.
           </p>
@@ -159,6 +159,7 @@ export default function CoursesPage() {
                 <button
                   key={tab}
                   onClick={() => setActiveTab(tab)}
+                  aria-pressed={activeTab === tab}
                   className={`flex-1 lg:flex-initial px-5 py-2.5 rounded-lg text-sm font-semibold transition-all duration-200 active:scale-95 ${
                     activeTab === tab
                       ? 'bg-white text-primary-800 shadow-sm'
@@ -175,6 +176,7 @@ export default function CoursesPage() {
               <Search className="absolute left-3.5 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
               <input
                 type="text"
+                aria-label="Search courses"
                 placeholder="Search courses, instructors..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
@@ -197,6 +199,8 @@ export default function CoursesPage() {
                       <img
                         src={course.image}
                         alt={course.title}
+                        loading="lazy"
+                        decoding="async"
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                       />
                     ) : (
@@ -216,7 +220,8 @@ export default function CoursesPage() {
                           handleToggleBookmark(course._id);
                         }}
                         className="absolute top-4 left-4 p-2 bg-white/80 hover:bg-white text-primary-600 rounded-full shadow-md backdrop-blur-sm transition-all duration-200 z-10"
-                        title={bookmarkedIds.includes(course._id) ? "Remove Bookmark" : "Bookmark Course"}
+                        aria-label={bookmarkedIds.includes(course._id) ? `Remove ${course.title} from bookmarks` : `Bookmark ${course.title}`}
+                        aria-pressed={bookmarkedIds.includes(course._id)}
                       >
                         <Bookmark className={`w-4 h-4 ${bookmarkedIds.includes(course._id) ? 'fill-current text-primary-600' : 'text-gray-400'}`} />
                       </button>
@@ -234,7 +239,7 @@ export default function CoursesPage() {
                     <div className="space-y-3.5 border-t border-gray-100 pt-5 mt-auto text-sm text-gray-600">
                       {course.instructor && (
                         <div className="flex items-center font-medium">
-                          <User className="w-4 w-4 mr-3 text-primary-600 flex-shrink-0" />
+                          <User className="h-4 w-4 mr-3 text-primary-600 flex-shrink-0" />
                           <span className="truncate">Instructor: <span className="text-gray-900 font-semibold">{course.instructor}</span></span>
                         </div>
                       )}

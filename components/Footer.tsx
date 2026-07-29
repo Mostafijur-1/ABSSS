@@ -1,51 +1,38 @@
 import Link from 'next/link';
-import { Mail, Phone, MapPin, GraduationCap, Facebook, Twitter, Linkedin } from 'lucide-react';
+import { Mail, Phone, MapPin, GraduationCap, ArrowUpRight } from 'lucide-react';
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="bg-gradient-to-b from-gray-900 via-gray-800 to-black text-white">
-      {/* Main Footer */}
+    <footer className="bg-slate-950 text-white">
       <div className="container-max section-padding-sm">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
-          {/* Logo and Description */}
-          <div className="col-span-1 md:col-span-2">
-            <div className="flex items-center space-x-3 mb-4">
-              <div className="bg-gradient-to-br from-primary-600 to-primary-500 p-2 rounded-lg">
+        <div className="mb-12 grid grid-cols-1 gap-10 md:grid-cols-2 lg:grid-cols-4">
+          <div className="lg:col-span-2">
+            <div className="mb-5 flex items-center gap-3">
+              <div className="rounded-xl bg-primary-600 p-2.5">
                 <GraduationCap className="h-6 w-6 text-white" />
               </div>
               <div>
-                <h3 className="text-2xl font-bold bg-gradient-to-r from-primary-400 to-blue-300 bg-clip-text text-transparent">ABSSS</h3>
-                <p className="text-sm text-gray-400 font-medium">Al Biruni Society of Scientific Studies</p>
+                <p className="text-xl font-extrabold tracking-tight text-white">ABSSS</p>
+                <p className="text-sm font-medium text-slate-400">Al Biruni Society of Scientific Studies</p>
               </div>
             </div>
-            <p className="text-gray-300 mb-6 leading-relaxed">
-              Promoting scientific research, innovation, and collaboration among university students and faculty. 
-              Join us in advancing knowledge and fostering academic excellence through groundbreaking research.
+            <p className="max-w-xl leading-relaxed text-slate-300">
+              A university community advancing scientific research, practical
+              innovation, and meaningful collaboration among students, faculty,
+              and researchers.
             </p>
-            <div className="flex space-x-4">
-              <a href="#" className="p-2.5 bg-gray-700 hover:bg-primary-600 rounded-lg transition-colors group" title="Facebook">
-                <Facebook className="h-5 w-5 text-white group-hover:scale-110 transition-transform" />
-              </a>
-              <a href="#" className="p-2.5 bg-gray-700 hover:bg-primary-600 rounded-lg transition-colors group" title="Twitter">
-                <Twitter className="h-5 w-5 text-white group-hover:scale-110 transition-transform" />
-              </a>
-              <a href="#" className="p-2.5 bg-gray-700 hover:bg-primary-600 rounded-lg transition-colors group" title="LinkedIn">
-                <Linkedin className="h-5 w-5 text-white group-hover:scale-110 transition-transform" />
-              </a>
-            </div>
           </div>
 
-          {/* Quick Links */}
           <div>
-            <h3 className="text-lg font-bold mb-6 flex items-center">
-              <span className="w-1 h-6 bg-gradient-to-b from-primary-600 to-primary-400 rounded-full mr-3"></span>
-              Quick Links
-            </h3>
-            <ul className="space-y-3">
+            <h2 className="mb-5 text-sm font-bold uppercase tracking-[0.16em] text-slate-400">
+              Explore
+            </h2>
+            <ul className="grid grid-cols-2 gap-x-5 gap-y-3 md:grid-cols-1">
               {[
                 { name: 'About Us', href: '/about' },
+                { name: 'Courses', href: '/courses' },
                 { name: 'Events', href: '/events' },
                 { name: 'Publications', href: '/publications' },
                 { name: 'Members', href: '/members' },
@@ -53,7 +40,7 @@ const Footer = () => {
                 { name: 'Contact', href: '/contact' },
               ].map((link) => (
                 <li key={link.name}>
-                  <Link href={link.href} className="text-gray-300 hover:text-primary-400 transition-colors font-medium">
+                  <Link href={link.href} className="font-medium text-slate-300 transition-colors hover:text-white">
                     {link.name}
                   </Link>
                 </li>
@@ -61,55 +48,58 @@ const Footer = () => {
             </ul>
           </div>
 
-          {/* Contact Info */}
           <div>
-            <h3 className="text-lg font-bold mb-6 flex items-center">
-              <span className="w-1 h-6 bg-gradient-to-b from-primary-600 to-primary-400 rounded-full mr-3"></span>
+            <h2 className="mb-5 text-sm font-bold uppercase tracking-[0.16em] text-slate-400">
               Contact
-            </h3>
-            <div className="space-y-4">
-              <div className="flex items-start space-x-3 group">
-                <MapPin className="h-5 w-5 text-primary-400 mt-0.5 flex-shrink-0 group-hover:scale-110 transition-transform" />
-                <span className="text-gray-300 leading-relaxed text-sm">University Campus</span>
+            </h2>
+            <address className="space-y-4 not-italic">
+              <div className="flex items-start gap-3">
+                <MapPin className="mt-0.5 h-5 w-5 shrink-0 text-primary-300" />
+                <span className="text-sm leading-relaxed text-slate-300">
+                  Islamic University of Technology<br />
+                  Gazipur, Bangladesh
+                </span>
               </div>
-              <div className="flex items-center space-x-3 group">
-                <Mail className="h-5 w-5 text-primary-400 flex-shrink-0 group-hover:scale-110 transition-transform" />
-                <a href="mailto:absssiut@gmail.com" className="text-gray-300 hover:text-primary-400 transition-colors font-medium text-sm">
+              <div className="flex items-center gap-3">
+                <Mail className="h-5 w-5 shrink-0 text-primary-300" />
+                <a href="mailto:absssiut@gmail.com" className="text-sm font-medium text-slate-300 transition-colors hover:text-white">
                   absssiut@gmail.com
                 </a>
               </div>
-              <div className="flex items-center space-x-3 group">
-                <Phone className="h-5 w-5 text-primary-400 flex-shrink-0 group-hover:scale-110 transition-transform" />
-                <a href="tel:+8801633939262" className="text-gray-300 hover:text-primary-400 transition-colors font-medium text-sm">
-                  +88 01633939262
+              <div className="flex items-center gap-3">
+                <Phone className="h-5 w-5 shrink-0 text-primary-300" />
+                <a href="tel:+8801633939262" className="text-sm font-medium text-slate-300 transition-colors hover:text-white">
+                  +880 1633-939262
                 </a>
               </div>
-            </div>
+            </address>
           </div>
         </div>
 
-        {/* Divider */}
-        <div className="h-px bg-gradient-to-r from-transparent via-primary-600/30 to-transparent mb-8"></div>
+        <div className="mb-8 h-px bg-slate-800"></div>
 
-        <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+        <div className="flex flex-col items-center justify-between gap-5 md:flex-row">
           <div className="text-center md:text-left">
-            <p className="text-gray-400 text-sm">
+            <p className="text-sm text-slate-400">
               &copy; {currentYear} Al Biruni Society of Scientific Studies. All rights reserved.
             </p>
-            <p className="text-xs text-gray-500 mt-1">
-              Developed by <a href="https://github.com/Mostafijur-1" target="_blank" rel="noopener noreferrer" className="text-primary-400 font-semibold hover:underline">Mostafij CSE'21 IUT</a>
-            </p>
           </div>
-          <div className="flex space-x-6">
-            <Link href="#" className="text-gray-400 hover:text-primary-400 transition-colors text-sm font-medium">
-              Privacy Policy
+          <div className="flex items-center gap-5">
+            <Link href="/about" className="text-sm font-medium text-slate-400 hover:text-white">
+              Our mission
             </Link>
-            <Link href="#" className="text-gray-400 hover:text-primary-400 transition-colors text-sm font-medium">
-              Terms of Service
+            <Link href="/contact" className="text-sm font-medium text-slate-400 hover:text-white">
+              Get in touch
             </Link>
-            <Link href="#" className="text-gray-400 hover:text-primary-400 transition-colors text-sm font-medium">
-              Cookie Policy
-            </Link>
+            <a
+              href="https://github.com/Mostafijur-1"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1 text-sm font-medium text-slate-400 hover:text-white"
+            >
+              Developer
+              <ArrowUpRight className="h-3.5 w-3.5" aria-hidden="true" />
+            </a>
           </div>
         </div>
       </div>
@@ -117,4 +107,4 @@ const Footer = () => {
   );
 };
 
-export default Footer; 
+export default Footer;

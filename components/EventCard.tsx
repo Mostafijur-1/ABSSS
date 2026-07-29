@@ -1,4 +1,4 @@
-import { Calendar, MapPin, Tag, ArrowRight, Bookmark } from 'lucide-react';
+import { Calendar, MapPin, Tag, ArrowRight, Bookmark, Flame } from 'lucide-react';
 import { Event } from '@/lib/api';
 import Link from 'next/link';
 
@@ -41,7 +41,7 @@ const EventCard = ({
   };
 
   return (
-    <div className="card overflow-hidden group h-full flex flex-col relative">
+    <article className="card group relative flex h-full flex-col overflow-hidden">
       {isStudent && (
         <button
           onClick={(e) => {
@@ -50,7 +50,8 @@ const EventCard = ({
             onToggleBookmark?.(event._id);
           }}
           className="absolute top-4 left-4 p-2 bg-white/80 hover:bg-white text-primary-600 rounded-full shadow-md backdrop-blur-sm transition-all duration-200 z-10"
-          title={isBookmarked ? "Remove Bookmark" : "Bookmark Event"}
+          aria-label={isBookmarked ? `Remove ${event.title} from bookmarks` : `Bookmark ${event.title}`}
+          aria-pressed={isBookmarked}
         >
           <Bookmark className={`w-4 h-4 ${isBookmarked ? 'fill-current text-primary-600' : 'text-gray-400'}`} />
         </button>
@@ -61,6 +62,8 @@ const EventCard = ({
           <img
             src={event.image}
             alt={event.title}
+            loading="lazy"
+            decoding="async"
             className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
           />
         </div>
@@ -73,8 +76,9 @@ const EventCard = ({
             {event.category.charAt(0).toUpperCase() + event.category.slice(1)}
           </span>
           {event.isUpcoming && (
-            <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold badge-success">
-              🔥 Upcoming
+            <span className="inline-flex items-center gap-1 rounded-full bg-amber-100 px-3 py-1 text-xs font-bold text-amber-900">
+              <Flame className="h-3.5 w-3.5" aria-hidden="true" />
+              Upcoming
             </span>
           )}
         </div>
@@ -100,7 +104,7 @@ const EventCard = ({
         </div>
 
         <div className="flex gap-2 mt-5">
-          <Link href={`/events/${event._id || ''}`} className="btn-primary flex-1 text-sm justify-center">
+          <Link href={`/events/${event._id}`} className="btn-primary flex-1 text-sm justify-center">
             Learn More
             <ArrowRight className="w-4 h-4" />
           </Link>
@@ -112,14 +116,15 @@ const EventCard = ({
                   ? 'bg-green-50 text-green-700 border-green-200 hover:bg-green-100'
                   : 'bg-primary-50 text-primary-700 border-primary-100 hover:bg-primary-100'
               }`}
+              aria-pressed={isRegistered}
             >
-              {isRegistered ? "RSVP'd ✓" : 'Register/RSVP'}
+              {isRegistered ? "RSVP confirmed" : 'Register / RSVP'}
             </button>
           )}
         </div>
       </div>
-    </div>
+    </article>
   );
 };
 
-export default EventCard; 
+export default EventCard;
